@@ -1,0 +1,368 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://scenes/main.gd" type="Script" id=1]
+[ext_resource path="res://scenes/cards/card1.tscn" type="PackedScene" id=2]
+[ext_resource path="res://themes/default_theme.tres" type="Theme" id=3]
+[ext_resource path="res://sprites/other/front_effect_1.png" type="Texture" id=4]
+[ext_resource path="res://sprites/landlords/test_body_1.png" type="Texture" id=5]
+[ext_resource path="res://sprites/other/front_effect_2.png" type="Texture" id=6]
+[ext_resource path="res://sprites/other/front_effect_4.png" type="Texture" id=7]
+[ext_resource path="res://sprites/other/front_effect_3.png" type="Texture" id=8]
+[ext_resource path="res://sprites/other/dialog_window1.png" type="Texture" id=9]
+[ext_resource path="res://sprites/other/guide1.png" type="Texture" id=10]
+[ext_resource path="res://sprites/landlords/zhirni_veriti_1.png" type="Texture" id=11]
+[ext_resource path="res://scenes/guide.gd" type="Script" id=12]
+
+[sub_resource type="AnimatedTexture" id=2]
+frames = 4
+fps = 6.0
+frame_0/texture = ExtResource( 4 )
+frame_1/texture = ExtResource( 6 )
+frame_1/delay_sec = 0.0
+frame_2/texture = ExtResource( 8 )
+frame_2/delay_sec = 0.0
+frame_3/texture = ExtResource( 7 )
+frame_3/delay_sec = 0.0
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="Gradient" id=5]
+interpolation_mode = 1
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture2D" id=6]
+gradient = SubResource( 5 )
+width = 4
+height = 4
+
+[sub_resource type="Curve" id=7]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.23875, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 0.784314 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[node name="main" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="bg" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="bg" type="TextureRect" parent="CanvasLayer/bg"]
+modulate = Color( 1, 1, 1, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 2 )
+stretch_mode = 1
+
+[node name="landlord" type="TextureRect" parent="CanvasLayer/bg"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -208.0
+margin_top = -120.0
+margin_right = 112.0
+margin_bottom = 120.0
+rect_pivot_offset = Vector2( 160, 200 )
+texture = ExtResource( 5 )
+stretch_mode = 6
+
+[node name="thought" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+margin_left = 8.0
+margin_top = 49.0
+margin_right = -112.0
+margin_bottom = 118.0
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/thought"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 9 )
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="CanvasLayer/thought"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 25.0
+margin_top = 18.0
+margin_right = -15.0
+margin_bottom = -13.0
+align = 1
+valign = 1
+autowrap = true
+
+[node name="top" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = 52.0
+rect_pivot_offset = Vector2( 312, 22 )
+
+[node name="hbox" type="HBoxContainer" parent="CanvasLayer/top"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -20.0
+alignment = 1
+
+[node name="labels" type="VBoxContainer" parent="CanvasLayer/top/hbox"]
+margin_right = 128.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 128, 0 )
+
+[node name="turnlabel" type="Label" parent="CanvasLayer/top/hbox/labels"]
+margin_right = 128.0
+margin_bottom = 13.0
+rect_min_size = Vector2( 96, 0 )
+text = "Turns: XXX "
+
+[node name="colonylabel" type="Label" parent="CanvasLayer/top/hbox/labels"]
+margin_top = 17.0
+margin_right = 128.0
+margin_bottom = 30.0
+text = "Colony: XXX "
+valign = 1
+
+[node name="healthbar" type="ProgressBar" parent="CanvasLayer/top/hbox"]
+margin_left = 132.0
+margin_right = 624.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 4 )
+step = 1.0
+value = 100.0
+percent_visible = false
+
+[node name="Label" type="Label" parent="CanvasLayer/top/hbox/healthbar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = " Health:"
+valign = 1
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/top/hbox/healthbar"]
+position = Vector2( 262, 23 )
+emitting = false
+amount = 12
+lifetime = 0.75
+fixed_fps = 30
+fract_delta = false
+texture = SubResource( 6 )
+emission_shape = 2
+emission_rect_extents = Vector2( 262, 1 )
+gravity = Vector2( 0, 128 )
+scale_amount_curve = SubResource( 7 )
+
+[node name="right" type="Control" parent="CanvasLayer"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -104.0
+margin_top = 40.0
+margin_right = -8.0
+margin_bottom = -112.0
+
+[node name="head_colony_label" type="Label" parent="CanvasLayer/right"]
+anchor_bottom = 0.323
+margin_left = -164.0
+margin_right = -4.0
+margin_bottom = 0.0559921
+align = 2
+valign = 1
+autowrap = true
+
+[node name="body_colony_label" type="Label" parent="CanvasLayer/right"]
+anchor_top = 0.338
+anchor_bottom = 0.662
+margin_left = -164.0
+margin_top = 0.135994
+margin_right = -4.0
+margin_bottom = -0.136017
+align = 2
+valign = 1
+autowrap = true
+
+[node name="legs_colony_label" type="Label" parent="CanvasLayer/right"]
+anchor_top = 0.677
+anchor_bottom = 1.0
+margin_left = -164.0
+margin_top = -0.056015
+margin_right = -4.0
+align = 2
+valign = 1
+autowrap = true
+
+[node name="vbox" type="VBoxContainer" parent="CanvasLayer/right"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+
+[node name="head_button" type="Button" parent="CanvasLayer/right/vbox"]
+margin_right = 96.0
+margin_bottom = 106.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Голова"
+
+[node name="body_button" type="Button" parent="CanvasLayer/right/vbox"]
+margin_top = 110.0
+margin_right = 96.0
+margin_bottom = 217.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Тело"
+
+[node name="legs_button" type="Button" parent="CanvasLayer/right/vbox"]
+margin_top = 221.0
+margin_right = 96.0
+margin_bottom = 328.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Ноги"
+
+[node name="bottom" type="Control" parent="CanvasLayer"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -104.0
+margin_right = -8.0
+margin_bottom = -8.0
+
+[node name="hbox" type="HBoxContainer" parent="CanvasLayer/bottom"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Tween" type="Tween" parent="CanvasLayer/bottom/hbox"]
+
+[node name="cards" type="HBoxContainer" parent="CanvasLayer/bottom/hbox"]
+margin_right = 524.0
+margin_bottom = 96.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="card1" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
+margin_left = 162.0
+margin_right = 226.0
+
+[node name="card2" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
+margin_left = 230.0
+margin_right = 294.0
+
+[node name="card3" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
+margin_left = 298.0
+margin_right = 362.0
+
+[node name="endturn_button" type="Button" parent="CanvasLayer/bottom/hbox"]
+margin_left = 528.0
+margin_right = 624.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 96, 0 )
+theme = ExtResource( 3 )
+text = "ЗАКОНЧИТЬ
+ХОД"
+
+[node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
+visible = false
+margin_left = 8.0
+margin_top = 237.0
+margin_right = 200.0
+margin_bottom = 333.0
+rect_min_size = Vector2( 192, 96 )
+mouse_filter = 2
+custom_styles/normal = SubResource( 1 )
+bbcode_enabled = true
+bbcode_text = "[center]TEST CARD
+[1]
+
+Nothing do."
+text = "TEST CARD
+[1]
+
+Nothing do."
+
+[node name="guidebutton" type="TextureButton" parent="CanvasLayer"]
+modulate = Color( 1, 1, 1, 0.25 )
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -151.0
+margin_right = 40.0
+margin_bottom = -119.0
+texture_normal = ExtResource( 10 )
+
+[node name="guide" type="Control" parent="CanvasLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 12 )
+
+[node name="bg" type="ColorRect" parent="CanvasLayer/guide"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.9 )
+
+[node name="vbox" type="VBoxContainer" parent="CanvasLayer/guide"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/guide/vbox"]
+visible = false
+margin_right = 612.0
+margin_bottom = 406.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 11 )
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="CanvasLayer/guide/vbox"]
+margin_top = 215.0
+margin_right = 632.0
+margin_bottom = 228.0
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Button" type="Button" parent="CanvasLayer/guide/vbox"]
+margin_top = 232.0
+margin_right = 632.0
+margin_bottom = 256.0
+rect_min_size = Vector2( 0, 24 )
+text = "Далее ->"
+icon_align = 1
+
+[node name="fade" type="ColorRect" parent="CanvasLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="defaultanimation" type="Tween" parent="."]
