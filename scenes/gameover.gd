@@ -67,7 +67,7 @@ func _ready():
 
 func _input(event):
 	if event is InputEvent:
-		if event.is_action_released("DOUBLE_CLICK"):
+		if event.is_pressed():
 			double_click += 1
 			if double_click > 1:
 				get_tree().change_scene("res://scenes/main.tscn")

@@ -29,10 +29,12 @@ func _ready():
 	
 	Global.health = 999
 	
+	fade.show()
 	tween.interpolate_property(fade, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
 	
 	yield(get_tree().create_timer(1.0), "timeout")
+	fade.hide()
 	
 	tween.interpolate_property(cont, "rect_position:x", cont.rect_position.x, -160.0, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 	tween.start()

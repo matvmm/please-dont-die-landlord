@@ -31,7 +31,7 @@ func _ready():
 func _on_pressed():
 	active = not active
 	
-	if get_tree().get_nodes_in_group("active card").size() > int(Global.maxCards / 2):
+	if get_tree().get_nodes_in_group("active card").size() >= int(Global.maxCards / 2):
 		active = false
 	
 	if active: add_to_group("active card")

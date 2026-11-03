@@ -36,6 +36,8 @@ func _init():
 
 func _ready():
 	right.hide()
+	fade.modulate.a = 1.0
+	fade.show()
 	currentLandlord = Global.landlords[Global.currentLandlordIndex]
 	landlord_texturerect.texture = load(currentLandlord["texture"])
 	healthbar.max_value = currentLandlord["health"]
@@ -44,9 +46,12 @@ func _ready():
 	if Global.currentLandlordIndex < 3: Global.play_audio("res://music/default_music_1.mp3")
 	else:                               Global.play_audio("res://music/default_music_2.mp3")
 	
-	match Global.currentLandlordIndex:
-		0,1,2: Global.maxCards = 5
-		3,4  : Global.maxCards = 7
+#	match Global.currentLandlordIndex:
+#		0,1,2: Global.maxCards = 5
+#		3,4  : Global.maxCards = 7
+#	Global.maxCards = 2 + Global.currentLandlordIndex * 1.5
+#	Global.maxCards = Global.currentLandlordIndex % 3 + 2
+	Global.maxCards = 4 + 2 * int(Global.currentLandlordIndex / 3)
 	
 	endturn_button.connect("pressed", self, "_on_endturn_button_pressed")
 	head_button.connect("pressed", self, "_on_head_button_pressed")
@@ -57,6 +62,13 @@ func _ready():
 	defaultanimation.connect("tween_all_completed", self, "_run_default_animation")
 	_run_default_animation()
 	plan_thought()
+	give_cards(Global.maxCards)
+	
+	tween.interpolate_property(fade, "modulate:a", 1.0, 0.0, 1.0)
+	tween.start()
+	
+	yield(get_tree().create_timer(1.0), "timeout")
+	fade.hide()
 
 func _run_default_animation():
 	defaultanimation.repeat = true
@@ -73,7 +85,7 @@ func _on_endturn_button_pressed():
 	if played.empty(): return
 	
 	right.show()
-	tween.interpolate_property(right, "rect_position:x", 640.0+128.0, 536.0, 0.4, Tween.TRANS_BACK, Tween.EASE_OUT)
+	tween.interpolate_property(right, "rect_position:x", get_viewport_rect().size.x+128.0, get_viewport_rect().size.x-96.0-8.0, 0.4, Tween.TRANS_BACK, Tween.EASE_OUT)
 	tween.interpolate_property(bottom, "modulate:a", bottom.modulate.a, 0.5, 0.25)
 	tween.start()
 
@@ -98,7 +110,12 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	var gain := 0
 	for card in played:
 		randomize()
-		gain += 1 + randi() % 3 if card.currentDefaultCard["bestPlace"] == attack else 1
+#		gain += 1 + randi() % 3 if card.currentDefaultCard["bestPlace"] == attack else 1
+		if card.currentDefaultCard["bestPlace"] == attack:
+			match attack:
+				1: gain += 6 + randi() % 4
+				2: gain += 4 + randi() % 2
+				3: gain += 1 + randi() % 1
 		card.apply_animation()
 	yield(get_tree().create_timer(0.6), "timeout")
 	
@@ -119,6 +136,7 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	Global.health -= 1
 	Global.health = max(Global.health, 0)
 	
+	apply_thought()
 	plan_thought()
 	
 	shake(landlord_texturerect, 2.0, 16)
@@ -132,17 +150,18 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	if round_over: return
 	
 	yield(get_tree().create_timer(0.6), "timeout")
-	
-	while cards.get_child_count() < Global.maxCards:
-		yield(get_tree().create_timer(0.3), "timeout")
-		cards.add_child(load("res://scenes/cards/card1.tscn").instance())
-	
+	give_cards(Global.maxCards)
 	yield(get_tree().create_timer(0.2), "timeout")
 	
 	tween.interpolate_property(bottom, "modulate:a", bottom.modulate.a, 1.0, 0.2)
 	tween.start()
 	
 	endturn_already_pressed = false
+
+func give_cards(amount: int):
+	while cards.get_child_count() < amount:
+		yield(get_tree().create_timer(0.1), "timeout")
+		cards.add_child(load("res://scenes/cards/card1.tscn").instance())
 
 func update_label():
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony

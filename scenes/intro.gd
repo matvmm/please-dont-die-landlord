@@ -2,7 +2,7 @@
 extends CanvasLayer
 
 var labelphrase: Array = [
-	"Игра сделана Drimer544 (Matvey Maksimovich)\nДля ЧРЕВАТОГО ДЖЕМА (2026) от OKNOgmkdv",
+	"Игра сделана Drimer544 (Matvey Maksimovich)\nДля ЧРЕВАТОГО ДЖЕМА (2026) от OKNOgmdv",
 	"Помогали в тестировании\nULTRAЗемлеройка;\ntapoksila.",
 	"Сделано с помощью Godot Engine 3.6.2-stable.",
 	"Please Don't Die, Landlord."
@@ -67,7 +67,7 @@ func _ready():
 
 func _input(event):
 	if event is InputEvent:
-		if event.is_action_released("DOUBLE_CLICK"):
+		if event.is_pressed():
 			double_click += 1
 			if double_click > 1:
 				get_tree().change_scene("res://scenes/main.tscn")

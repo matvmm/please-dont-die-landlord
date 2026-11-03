@@ -1,7 +1,6 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
-[ext_resource path="res://scenes/cards/card1.tscn" type="PackedScene" id=2]
 [ext_resource path="res://themes/default_theme.tres" type="Theme" id=3]
 [ext_resource path="res://sprites/other/front_effect_1.png" type="Texture" id=4]
 [ext_resource path="res://sprites/landlords/test_body_1.png" type="Texture" id=5]
@@ -261,18 +260,6 @@ margin_right = 524.0
 margin_bottom = 96.0
 size_flags_horizontal = 3
 alignment = 1
-
-[node name="card1" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
-margin_left = 162.0
-margin_right = 226.0
-
-[node name="card2" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
-margin_left = 230.0
-margin_right = 294.0
-
-[node name="card3" parent="CanvasLayer/bottom/hbox/cards" instance=ExtResource( 2 )]
-margin_left = 298.0
-margin_right = 362.0
 
 [node name="endturn_button" type="Button" parent="CanvasLayer/bottom/hbox"]
 margin_left = 528.0
