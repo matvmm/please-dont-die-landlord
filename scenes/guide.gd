@@ -20,10 +20,11 @@ func _ready():
 	guidebutton.connect("pressed", self, "_on_guidebutton_pressed")
 	button.connect("pressed", self, "_on_button_pressed")
 	
-	if Global.currentLandlordIndex != 0:
+	if Global.guideWatched == true:
 		hide()
 		return
 	
+	Global.guideWatched = true
 	show()
 	label.text = pages[0]
 

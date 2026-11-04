@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://themes/default_theme.tres" type="Theme" id=3]
@@ -55,6 +55,16 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="Gradient" id=8]
+interpolation_mode = 2
+colors = PoolColorArray( 0, 0, 0, 0, 0, 0, 0, 1 )
+
+[sub_resource type="GradientTexture2D" id=9]
+gradient = SubResource( 8 )
+fill = 1
+fill_from = Vector2( 0.5, 0.5 )
+fill_to = Vector2( 2.8, 0 )
+
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
 
@@ -69,7 +79,7 @@ modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 texture = SubResource( 2 )
-stretch_mode = 1
+stretch_mode = 2
 
 [node name="landlord" type="TextureRect" parent="CanvasLayer/bg"]
 anchor_left = 0.5
@@ -148,7 +158,6 @@ rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 custom_styles/fg = SubResource( 3 )
 custom_styles/bg = SubResource( 4 )
-step = 1.0
 value = 100.0
 percent_visible = false
 
@@ -267,7 +276,7 @@ margin_right = 624.0
 margin_bottom = 96.0
 rect_min_size = Vector2( 96, 0 )
 theme = ExtResource( 3 )
-text = "ЗАКОНЧИТЬ
+text = "ЗАВЕРШИТЬ
 ХОД"
 
 [node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
@@ -343,6 +352,13 @@ margin_bottom = 256.0
 rect_min_size = Vector2( 0, 24 )
 text = "Далее ->"
 icon_align = 1
+
+[node name="shading" type="TextureRect" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource( 9 )
+stretch_mode = 1
 
 [node name="fade" type="ColorRect" parent="CanvasLayer"]
 visible = false

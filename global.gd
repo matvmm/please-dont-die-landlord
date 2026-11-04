@@ -4,6 +4,7 @@ extends Node
 var turns: int = 0
 var health: int = 100
 var maxCards: int = 0
+var guideWatched: bool = false
 
 var headColony: int = 0
 var bodyColony: int = 0
@@ -34,21 +35,21 @@ var landlords: Array = [
 		"name": "Мышь", "desc": "Крошечная и шустрая.",
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
-		"health": 18, "need": 8,
+		"health": 11, "need": 12,
 		"activities": {"snack": 4, "nap": 3, "groom": 3, "hide": 3, "zoomies": 2, "vet": 1},
 	},
 	{
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
-		"health": 35, "need": 20,
+		"health": 35, "need": 32,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
 		"texture": "res://sprites/landlords/dog_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_dog_1.png",
-		"health": 50, "need": 32,
+		"health": 45, "need": 49,
 		"activities": {"zoomies": 4, "snack": 4, "hunt": 3, "nap": 3, "vet": 2, "groom": 1, "hide": 1},
 	},
 	

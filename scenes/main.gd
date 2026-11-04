@@ -24,11 +24,20 @@ onready var defaultanimation = $defaultanimation
 onready var thought_texturerect = $CanvasLayer/thought/TextureRect
 onready var thought_label = $CanvasLayer/thought/Label
 onready var cpu_particles_2d_healthbar = $CanvasLayer/top/hbox/healthbar/CPUParticles2D
+onready var shading = $CanvasLayer/shading
+onready var thought_control = $CanvasLayer/thought
 
 var endturn_already_pressed: bool = false
 var currentLandlord: Dictionary
 var thought: Dictionary
 var round_over: bool = false
+var mScreenMotion: Dictionary = {
+	"top": Vector2.ZERO,
+	"right": Vector2.ZERO,
+	"bottom": Vector2.ZERO,
+	"thought": Vector2.ZERO,
+	"landlord": Vector2.ZERO
+}
 
 
 func _init():
@@ -42,6 +51,12 @@ func _ready():
 	landlord_texturerect.texture = load(currentLandlord["texture"])
 	healthbar.max_value = currentLandlord["health"]
 	Global.health = currentLandlord["health"]
+	
+	mScreenMotion["bottom"] = bottom.rect_position
+	mScreenMotion["top"] = top.rect_position
+	mScreenMotion["right"] = right.rect_position
+	mScreenMotion["thought"] = thought_control.rect_position
+	mScreenMotion["landlord"] = landlord_texturerect.rect_position
 	
 	if Global.currentLandlordIndex < 3: Global.play_audio("res://music/default_music_1.mp3")
 	else:                               Global.play_audio("res://music/default_music_2.mp3")
@@ -59,6 +74,7 @@ func _ready():
 	legs_button.connect("pressed", self, "_on_legs_button_pressed")
 	
 	update_label()
+	endturn_button.text = tr("ЗАВЕРШИТЬ ХОД").replace(" ", "\n")
 	defaultanimation.connect("tween_all_completed", self, "_run_default_animation")
 	_run_default_animation()
 	plan_thought()
@@ -76,6 +92,19 @@ func _run_default_animation():
 	defaultanimation.interpolate_property(landlord_texturerect, "rect_scale:x", -1.0, 1.0, 0.8, Tween.TRANS_BACK, Tween.EASE_OUT, 15.0)
 	defaultanimation.start()
 
+func _process(delta):
+	var m: Vector2 = get_global_mouse_position()
+	var mSM: Dictionary = mScreenMotion
+	var s1: float = 0.02
+	var s2: float = 0.01
+	
+	bottom.rect_position = lerp(bottom.rect_position, mSM["bottom"] + m * s2, 15 * delta)
+	top.rect_position = lerp(top.rect_position, mSM["top"] + m * s2, 15 * delta)
+	right.rect_position = lerp(right.rect_position, mSM["right"] + m * s2, 15 * delta)
+	
+	thought_control.rect_position = lerp(thought_control.rect_position, mSM["thought"] + m * s1, 15 * delta)
+	landlord_texturerect.rect_position = lerp(landlord_texturerect.rect_position, mSM["landlord"] + m * s1, 15 * delta)
+
 func _on_endturn_button_pressed():
 	if endturn_already_pressed: return
 	
@@ -86,7 +115,6 @@ func _on_endturn_button_pressed():
 	
 	right.show()
 	tween.interpolate_property(right, "rect_position:x", get_viewport_rect().size.x+128.0, get_viewport_rect().size.x-96.0-8.0, 0.4, Tween.TRANS_BACK, Tween.EASE_OUT)
-	tween.interpolate_property(bottom, "modulate:a", bottom.modulate.a, 0.5, 0.25)
 	tween.start()
 
 func _on_head_button_pressed():
@@ -107,6 +135,10 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	
 	endturn_already_pressed = true
 	
+#	tween.interpolate_property(bottom, "modulate:a", bottom.modulate.a, 0.5, 0.25)
+#	tween.start()
+	yield(get_tree().create_timer(0.3), "timeout")
+	
 	var gain := 0
 	for card in played:
 		randomize()
@@ -116,6 +148,11 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 				1: gain += 6 + randi() % 4
 				2: gain += 4 + randi() % 2
 				3: gain += 1 + randi() % 1
+		else:
+			match attack:
+				1: gain -= 2 + randi() % 3
+				2: gain -= 1 + randi() % 2
+				3: gain -= 0 + randi() % 1
 		card.apply_animation()
 	yield(get_tree().create_timer(0.6), "timeout")
 	
@@ -144,8 +181,9 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	tween.interpolate_property(bg, "modulate:a", bg.modulate.a, clamp(0.2 - Global.health * 0.002, 0.0, 0.2), 5.0)
 	tween.start()
 	
-	tween.interpolate_property(top, "rect_scale", Vector2.ONE*1.05, Vector2.ONE, 0.6, Tween.TRANS_BOUNCE, Tween.EASE_OUT)
-	tween.start()
+#	tween.interpolate_property(top, "rect_scale", Vector2.ONE*1.05, Vector2.ONE, 0.6, Tween.TRANS_BOUNCE, Tween.EASE_OUT)
+#	tween.start()
+	shake(top, 4.0, 8.0)
 	update_label()
 	if round_over: return
 	
@@ -165,15 +203,19 @@ func give_cards(amount: int):
 
 func update_label():
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
-	turnlabel.text = "Ход:     " + str(Global.turns)
-	colonylabel.text = "Колония: " + str(colony) + " / " + str(currentLandlord["need"])
+	turnlabel.text = tr("Ход") + ": " + str(Global.turns)
+	colonylabel.text = tr("Колония") + ": " + str(colony) + " / " + str(currentLandlord["need"])
 	tween.interpolate_property(healthbar, "value", healthbar.value, Global.health, 0.4, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 #	healthbar.value = Global.health
-	healthbar_label.text = " Здоровье: " + str(Global.health) + "%"
-	head_colony_label.text = "Голова: " + str(Global.headColony) + " "
-	body_colony_label.text = "Тело: " + str(Global.bodyColony) + " "
-	legs_colony_label.text = "Ноги: " + str(Global.legsColony) + " "
+	healthbar_label.text = " " + tr("Здоровье") + ": " + str(Global.health) + "%"
+	head_colony_label.text = tr("Голова") + ": " + str(Global.headColony) + " "
+	body_colony_label.text = tr("Тело") + ": " + str(Global.bodyColony) + " "
+	legs_colony_label.text = tr("Ноги") + ": " + str(Global.legsColony) + " "
+	
+	tween.interpolate_property(shading, "texture:fill_to", shading.texture.fill_to, Vector2(2.8, 0) if !is_scared() else Vector2(1.2, 0.0), 4.5, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	tween.start()
+#	shading.texture.fill_to = Vector2(2.5, 0) if !is_scared() else Vector2(1.5, 0)
 	
 	if colony >= currentLandlord["need"]:
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
@@ -220,10 +262,10 @@ func go_to_next_scene(scenePath: String):
 	
 	fade.modulate.a = 0.0
 	fade.show()
-	tween.interpolate_property(fade, "modulate:a", 0.0, 1.0, 2.5)
+	tween.interpolate_property(fade, "modulate:a", 0.0, 1.0, 1.5)
 	tween.start()
 	
-	yield(get_tree().create_timer(3.0), "timeout")
+	yield(get_tree().create_timer(2.0), "timeout")
 	
 	get_tree().change_scene(scenePath)
 
