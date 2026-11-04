@@ -1,6 +1,7 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
+[ext_resource path="res://sprites/other/fg2.png" type="Texture" id=2]
 [ext_resource path="res://themes/default_theme.tres" type="Theme" id=3]
 [ext_resource path="res://sprites/other/front_effect_1.png" type="Texture" id=4]
 [ext_resource path="res://sprites/landlords/test_body_1.png" type="Texture" id=5]
@@ -126,34 +127,10 @@ margin_right = -8.0
 margin_bottom = 52.0
 rect_pivot_offset = Vector2( 312, 22 )
 
-[node name="hbox" type="HBoxContainer" parent="CanvasLayer/top"]
+[node name="healthbar" type="ProgressBar" parent="CanvasLayer/top"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = -20.0
-alignment = 1
-
-[node name="labels" type="VBoxContainer" parent="CanvasLayer/top/hbox"]
-margin_right = 128.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 128, 0 )
-
-[node name="turnlabel" type="Label" parent="CanvasLayer/top/hbox/labels"]
-margin_right = 128.0
-margin_bottom = 13.0
-rect_min_size = Vector2( 96, 0 )
-text = "Turns: XXX "
-
-[node name="colonylabel" type="Label" parent="CanvasLayer/top/hbox/labels"]
-margin_top = 17.0
-margin_right = 128.0
-margin_bottom = 30.0
-text = "Colony: XXX "
-valign = 1
-
-[node name="healthbar" type="ProgressBar" parent="CanvasLayer/top/hbox"]
-margin_left = 132.0
-margin_right = 624.0
-margin_bottom = 24.0
 rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 3
 custom_styles/fg = SubResource( 3 )
@@ -161,13 +138,13 @@ custom_styles/bg = SubResource( 4 )
 value = 100.0
 percent_visible = false
 
-[node name="Label" type="Label" parent="CanvasLayer/top/hbox/healthbar"]
+[node name="Label" type="Label" parent="CanvasLayer/top/healthbar"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 text = " Health:"
 valign = 1
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/top/hbox/healthbar"]
+[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/top/healthbar"]
 position = Vector2( 262, 23 )
 emitting = false
 amount = 12
@@ -278,6 +255,46 @@ rect_min_size = Vector2( 96, 0 )
 theme = ExtResource( 3 )
 text = "ЗАВЕРШИТЬ
 ХОД"
+
+[node name="pBottom" type="Control" parent="CanvasLayer"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 45.0
+margin_top = -152.0
+margin_right = -106.0
+margin_bottom = -117.0
+mouse_filter = 2
+
+[node name="fg" type="TextureRect" parent="CanvasLayer/pBottom"]
+modulate = Color( 1, 1, 1, 0.75 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 75.0
+margin_right = -94.0
+texture = ExtResource( 2 )
+stretch_mode = 1
+
+[node name="hbox" type="HBoxContainer" parent="CanvasLayer/pBottom"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+
+[node name="turnlabel" type="Label" parent="CanvasLayer/pBottom/hbox"]
+margin_left = 146.0
+margin_top = 11.0
+margin_right = 242.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 96, 0 )
+text = "Turns: XXX "
+
+[node name="colonylabel" type="Label" parent="CanvasLayer/pBottom/hbox"]
+margin_left = 246.0
+margin_top = 11.0
+margin_right = 342.0
+margin_bottom = 24.0
+text = "Colony: XXX "
+valign = 1
 
 [node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
 visible = false

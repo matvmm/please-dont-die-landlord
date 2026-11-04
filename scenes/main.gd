@@ -3,10 +3,10 @@ extends Node2D
 
 onready var endturn_button = $CanvasLayer/bottom/hbox/endturn_button
 onready var cards = $CanvasLayer/bottom/hbox/cards
-onready var healthbar_label = $CanvasLayer/top/hbox/healthbar/Label
-onready var healthbar = $CanvasLayer/top/hbox/healthbar
-onready var turnlabel = $CanvasLayer/top/hbox/labels/turnlabel
-onready var colonylabel = $CanvasLayer/top/hbox/labels/colonylabel
+onready var healthbar_label = $CanvasLayer/top/healthbar/Label
+onready var healthbar = $CanvasLayer/top/healthbar
+onready var turnlabel = $CanvasLayer/pBottom/hbox/turnlabel
+onready var colonylabel = $CanvasLayer/pBottom/hbox/colonylabel
 onready var tween = $Tween
 onready var right = $CanvasLayer/right
 onready var head_button = $CanvasLayer/right/vbox/head_button
@@ -23,9 +23,10 @@ onready var fade = $CanvasLayer/fade
 onready var defaultanimation = $defaultanimation
 onready var thought_texturerect = $CanvasLayer/thought/TextureRect
 onready var thought_label = $CanvasLayer/thought/Label
-onready var cpu_particles_2d_healthbar = $CanvasLayer/top/hbox/healthbar/CPUParticles2D
+onready var cpu_particles_2d_healthbar = $CanvasLayer/top/healthbar/CPUParticles2D
 onready var shading = $CanvasLayer/shading
 onready var thought_control = $CanvasLayer/thought
+onready var p_bottom = $CanvasLayer/pBottom
 
 var endturn_already_pressed: bool = false
 var currentLandlord: Dictionary
@@ -35,6 +36,7 @@ var mScreenMotion: Dictionary = {
 	"top": Vector2.ZERO,
 	"right": Vector2.ZERO,
 	"bottom": Vector2.ZERO,
+	"pBottom": Vector2.ZERO,
 	"thought": Vector2.ZERO,
 	"landlord": Vector2.ZERO
 }
@@ -53,6 +55,7 @@ func _ready():
 	Global.health = currentLandlord["health"]
 	
 	mScreenMotion["bottom"] = bottom.rect_position
+	mScreenMotion["pBottom"] = p_bottom.rect_position
 	mScreenMotion["top"] = top.rect_position
 	mScreenMotion["right"] = right.rect_position
 	mScreenMotion["thought"] = thought_control.rect_position
@@ -95,12 +98,14 @@ func _run_default_animation():
 func _process(delta):
 	var m: Vector2 = get_global_mouse_position()
 	var mSM: Dictionary = mScreenMotion
-	var s1: float = 0.02
+	var s1: float = 0.04
 	var s2: float = 0.01
+	var s3: float = 0.02
 	
 	bottom.rect_position = lerp(bottom.rect_position, mSM["bottom"] + m * s2, 15 * delta)
 	top.rect_position = lerp(top.rect_position, mSM["top"] + m * s2, 15 * delta)
 	right.rect_position = lerp(right.rect_position, mSM["right"] + m * s2, 15 * delta)
+	p_bottom.rect_position = lerp(p_bottom.rect_position, mSM["pBottom"] + m * s3, 15 * delta)
 	
 	thought_control.rect_position = lerp(thought_control.rect_position, mSM["thought"] + m * s1, 15 * delta)
 	landlord_texturerect.rect_position = lerp(landlord_texturerect.rect_position, mSM["landlord"] + m * s1, 15 * delta)

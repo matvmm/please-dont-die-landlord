@@ -222,6 +222,8 @@ var activities: Dictionary = {
 onready var audioPlayer: AudioStreamPlayer
 
 func _ready():
+	return
+	
 	audioPlayer = AudioStreamPlayer.new()
 	add_child(audioPlayer)
 	
@@ -232,6 +234,8 @@ func _ready():
 	audioPlayer.play()
 
 func play_audio(newStream: String):
+	return
+	
 	if audioPlayer.stream:
 		if audioPlayer.stream.resource_path == newStream:
 			return
