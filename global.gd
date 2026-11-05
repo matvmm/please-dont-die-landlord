@@ -4,7 +4,7 @@ extends Node
 var turns: int = 0
 var health: int = 100
 var maxCards: int = 0
-var guideWatched: bool = false
+var guideWatched: bool = true
 
 var headColony: int = 0
 var bodyColony: int = 0

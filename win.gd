@@ -2,9 +2,11 @@
 extends CanvasLayer
 
 var double_click: int = 0
+var label_defpos: Vector2 = Vector2.ZERO
 
 onready var tween = $Tween
 onready var label = $Label
+onready var mn = $mN
 
 
 func _ready():
@@ -23,6 +25,8 @@ func _ready():
 	Global.bodyColony = 0
 	Global.legsColony = 0
 	Global.turns = 0
+	
+	label_defpos = label.rect_position
 	
 	yield(get_tree().create_timer(0.25), "timeout")
 
@@ -65,6 +69,10 @@ func _ready():
 #	yield(get_tree().create_timer(3.0), "timeout")
 	
 	get_tree().change_scene("res://scenes/intro.tscn")
+
+func _process(delta):
+	var m: Vector2 = mn.get_global_mouse_position()
+	label.rect_position = lerp(label.rect_position, label_defpos + m * 0.02, 15 * delta)
 
 func _input(event):
 	if event is InputEvent:

@@ -27,6 +27,7 @@ onready var cpu_particles_2d_healthbar = $CanvasLayer/top/healthbar/CPUParticles
 onready var shading = $CanvasLayer/shading
 onready var thought_control = $CanvasLayer/thought
 onready var p_bottom = $CanvasLayer/pBottom
+onready var colonyadd_label = $CanvasLayer/pBottom/colonyadd
 
 var endturn_already_pressed: bool = false
 var currentLandlord: Dictionary
@@ -156,14 +157,15 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 				3: gain += 1 + randi() % 2
 		else:
 			match attack:
-				1: gain -= 2 + randi() % 3
-				2: gain -= 1 + randi() % 3
-				3: gain -= 0 + randi() % 2
+				1: gain -= 6 + randi() % 4
+				2: gain -= 4 + randi() % 3
+				3: gain -= 1 + randi() % 2
 		card.apply_animation()
 	yield(get_tree().create_timer(0.6), "timeout")
 	
 	Global.turns += 1
 	
+	var prev_colony: int = Global.headColony+Global.bodyColony+Global.legsColony
 	### если колония в одной из частей тела начата, то она продолжает размножаться автономно
 	randomize()
 	if Global.headColony > 0: Global.headColony += (1 + randi() % 2) * int(Global.headColony / 16)
@@ -202,7 +204,7 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 #	tween.interpolate_property(top, "rect_scale", Vector2.ONE*1.05, Vector2.ONE, 0.6, Tween.TRANS_BOUNCE, Tween.EASE_OUT)
 #	tween.start()
 	shake(top, 4.0, 8.0)
-	update_label()
+	update_label(prev_colony)
 	if round_over: return
 	
 	yield(get_tree().create_timer(0.6), "timeout")
@@ -219,11 +221,15 @@ func give_cards(amount: int):
 		yield(get_tree().create_timer(0.1), "timeout")
 		cards.add_child(load("res://scenes/cards/card1.tscn").instance())
 
-func update_label():
+func update_label(prev_colony: int = -1):
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
 	turnlabel.text = tr("Ход") + ": " + str(Global.turns)
 	colonylabel.text = tr("Колония") + ": " + str(colony) + " / " + str(currentLandlord["need"])
 	tween.interpolate_property(healthbar, "value", healthbar.value, Global.health, 0.4, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	if prev_colony != -1:
+		colonyadd_label.text = ("+" if prev_colony < colony else "") + str(colony - prev_colony)
+		tween.interpolate_property(colonyadd_label, "rect_position:y", 11.0-colonyadd_label.rect_size.y, 11.0-18.0, 0.75, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+		tween.interpolate_property(colonyadd_label, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
 #	healthbar.value = Global.health
 	healthbar_label.text = " " + tr("Здоровье") + ": " + str(Global.health) + "%"

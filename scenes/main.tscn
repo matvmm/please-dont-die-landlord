@@ -296,6 +296,20 @@ margin_bottom = 24.0
 text = "Colony: XXX "
 valign = 1
 
+[node name="colonyadd" type="Label" parent="CanvasLayer/pBottom"]
+modulate = Color( 1, 1, 1, 0 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 26.5
+margin_top = -6.5
+margin_right = 66.5
+margin_bottom = 6.5
+text = "xXXX"
+align = 1
+valign = 1
+
 [node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
 visible = false
 margin_left = 8.0

@@ -27,7 +27,7 @@ window/size/width=640
 window/size/height=480
 mouse_cursor/custom_image="res://sprites/other/cursor1.png"
 window/stretch/mode="viewport"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep"
 
 [gui]
 

@@ -46,3 +46,5 @@ align = 1
 valign = 2
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="mN" type="Node2D" parent="."]

@@ -46,3 +46,11 @@ align = 1
 valign = 2
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="lol" type="Label" parent="."]
+margin_top = -29.0
+margin_right = 352.0
+text = "ты наверняка ОБОЖАЕШЬ копаться в дерьме, не
+так ли? неужели ты тут не по этой причине?                                   UwU"
+
+[node name="mN" type="Node2D" parent="."]
