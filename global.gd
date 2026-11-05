@@ -36,20 +36,20 @@ var landlords: Array = [
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
 		"health": 11, "need": 12,
-		"activities": {"snack": 4, "nap": 3, "groom": 3, "hide": 3, "zoomies": 2, "vet": 1},
+		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
-		"health": 35, "need": 32,
+		"health": 35, "need": 38,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
 		"texture": "res://sprites/landlords/dog_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_dog_1.png",
-		"health": 45, "need": 49,
+		"health": 51, "need": 53,
 		"activities": {"zoomies": 4, "snack": 4, "hunt": 3, "nap": 3, "vet": 2, "groom": 1, "hide": 1},
 	},
 	
@@ -93,6 +93,7 @@ var activities: Dictionary = {
 	},
 	"eat": {
 		"default_text": ["Так хочется есть. Пора перекусить.", "В холодильнике что-нибудь осталось?", "Коня бы съел. Или двух."],
+		"zone": "body",
 		"effect": {"health": +4, "colony": +5},
 		"danger": {
 			"body": {"texts": ["Живот чем-то набит... Совсем не голоден.", "Только поел, а от еды уже тошнит."], "effect": {"health": -2, "colony": -3}},
@@ -101,6 +102,7 @@ var activities: Dictionary = {
 	},
 	"doctor": {
 		"default_text": ["Надо бы наконец сходить к врачу.", "Всё. Записываюсь на приём.", "Этот кашель не проходит. Пора к врачу."],
+		"zone": "biggest",
 		"effect": {"health": +15, "colony": -15},
 		"danger": {
 			"head": {"texts": ["К врачу... что я хотел сделать? Забыл.", "У меня на сегодня был план. Какой?"], "effect": {"health": -3}},
@@ -116,6 +118,7 @@ var activities: Dictionary = {
 	},
 	"ponos": {
 		"default_text": ["Ой нет. Живот...", "Мне нужно в туалет. Срочно.", "Эта шаурма была неудачной."],
+		"zone": "body",
 		"effect": {"health": -5, "colony": -3},
 		"danger": {
 			"body": {"texts": ["Живот взбунтовался. Будет плохо.", "Что-то прогрызает мне кишки."], "effect": {"health": -6, "colony": -4}},
@@ -124,6 +127,7 @@ var activities: Dictionary = {
 	},
 	"scratch": {
 		"default_text": ["Как же чешется. Надо почесаться.", "Почему кожа сегодня так чешется?", "Блохи? Комары? Кто знает."],
+		"zone": "head",
 		"effect": {"colony": -2},
 		"danger": {
 			"head": {"texts": ["Голова чешется, но руки не слушаются.", "Что-то ползает под волосами."], "effect": {"health": -2}},
@@ -132,6 +136,7 @@ var activities: Dictionary = {
 	},
 	"fight": {
 		"default_text": ["Кто-то косо посмотрел. Погнали!", "Хочется кому-нибудь врезать.", "Иду в бар. Сейчас начну."],
+		"zone": "head",
 		"effect": {"health": -10, "colony": -2},
 		"danger": {
 			"head": {"texts": ["Хочу драться... а с кем?", "Мне сказали бить стену. Ну я и бью."], "effect": {"health": -12, "colony": -2}},
@@ -140,6 +145,7 @@ var activities: Dictionary = {
 	},
 	"bath": {
 		"default_text": ["Горячая ванна была бы кстати.", "Пора помыться. Может, зуд пройдёт.", "Время ванны. Пена и тишина."],
+		"zone": "body",
 		"effect": {"health": +2, "colony": -3},
 		"danger": {
 			"legs": {"texts": ["Не могу залезть в ванну с такими ногами.", "Ванна такая высокая. Посижу на краю."], "effect": {"health": -2}},
@@ -147,6 +153,7 @@ var activities: Dictionary = {
 	},
 	"jog": {
 		"default_text": ["Пойду побегаю. Свежий воздух!", "Пора, наверное, форму поддерживать.", "Десять километров. Ну или пять."],
+		"zone": "legs",
 		"effect": {"health": +2, "colony": -1},
 		"danger": {
 			"legs": {"texts": ["Ноги как свинец. Никаких шансов.", "Дошёл до двери. Это и была пробежка."], "effect": {"health": -2}},
@@ -155,6 +162,7 @@ var activities: Dictionary = {
 	},
 	"drink": {
 		"default_text": ["Мне нужно выпить. Одну рюмку.", "Немного алкоголя никому не вредило.", "Одно пиво. Два пива. Кто считает?"],
+		"zone": "body",
 		"effect": {"health": -3, "colony": -4},
 		"danger": {
 			"head": {"texts": ["Так кружится голова. Больше ни глотка.", "Почему бутылка спиртного со мной разговаривает?"], "effect": {"health": -3}},
@@ -172,6 +180,7 @@ var activities: Dictionary = {
 	},
 	"snack": {
 		"default_text": ["Еда. Еда. ЕДА.", "Кажется, пахнет едой?"],
+		"zone": "body",
 		"effect": {"health": +2, "colony": +3},
 		"danger": {
 			"body": {"texts": ["Внутри что-то есть. Есть не хочется."], "effect": {"health": -2, "colony": -3}},
@@ -180,6 +189,7 @@ var activities: Dictionary = {
 	},
 	"groom": {
 		"default_text": ["Зудит. Пора вылизаться.", "Всё должно блестеть. Лизь, лизь, лизь."],
+		"zone": "legs",
 		"effect": {"colony": -2},
 		"danger": {
 			"head": {"texts": ["Не достаю до собственной головы. Почему она чешется?"], "effect": {"health": -2}},
@@ -188,6 +198,7 @@ var activities: Dictionary = {
 	},
 	"hunt": {
 		"default_text": ["Что-то шевельнулось. ОХОТА.", "Я хищник. Бойтесь меня."],
+		"zone": "legs",
 		"effect": {"health": +2, "colony": +2},
 		"danger": {
 			"head": {"texts": ["За кем я гнался? Забыл."], "effect": {"health": -2}},
@@ -196,6 +207,7 @@ var activities: Dictionary = {
 	},
 	"zoomies": {
 		"default_text": ["Мне вдруг НАДО бежать.", "Дикий забег! Меня не остановить."],
+		"zone": "legs",
 		"effect": {"health": -1, "colony": -2},
 		"danger": {
 			"body": {"texts": ["Не могу дышать. Забег отменяется."], "effect": {"health": -3, "colony": -2}},
@@ -211,6 +223,7 @@ var activities: Dictionary = {
 	},
 	"vet": {
 		"default_text": ["У человека переноска. ТОЛЬКО НЕ ПЕРЕНОСКА.", "Почему здесь пахнет страхом?"],
+		"zone": "biggest",
 		"effect": {"health": +15, "colony": -5},
 		"danger": {
 			"head": {"texts": ["Переноска? Какая переноска? Кто я?"], "effect": {"health": -3}},

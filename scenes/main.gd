@@ -144,6 +144,7 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 #	tween.start()
 	yield(get_tree().create_timer(0.3), "timeout")
 	
+	### считаем бонус при верном попадании паразита, или наоборот вычет из колонии, если он не прижился.
 	var gain := 0
 	for card in played:
 		randomize()
@@ -151,35 +152,47 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 		if card.currentDefaultCard["bestPlace"] == attack:
 			match attack:
 				1: gain += 6 + randi() % 4
-				2: gain += 4 + randi() % 2
-				3: gain += 1 + randi() % 1
+				2: gain += 4 + randi() % 3
+				3: gain += 1 + randi() % 2
 		else:
 			match attack:
 				1: gain -= 2 + randi() % 3
-				2: gain -= 1 + randi() % 2
-				3: gain -= 0 + randi() % 1
+				2: gain -= 1 + randi() % 3
+				3: gain -= 0 + randi() % 2
 		card.apply_animation()
 	yield(get_tree().create_timer(0.6), "timeout")
 	
 	Global.turns += 1
 	
+	### если колония в одной из частей тела начата, то она продолжает размножаться автономно
 	randomize()
 	if Global.headColony > 0: Global.headColony += (1 + randi() % 2) * int(Global.headColony / 16)
 	if Global.bodyColony > 0: Global.bodyColony += (1 + randi() % 2) * int(Global.bodyColony / 10)
 	if Global.legsColony > 0: Global.legsColony += (randi() % 3) * int(Global.legsColony / 16)
 	
+	### применяем бонус
 	match attack:
 		1: Global.headColony += gain
 		2: Global.bodyColony += gain
 		3: Global.legsColony += gain
 	
+	### не даём колонии уйти в минус
+	Global.headColony = max(Global.headColony, 0)
+	Global.bodyColony = max(Global.bodyColony, 0)
+	Global.legsColony = max(Global.legsColony, 0)
+	
+	### вычитаем здоровье
 	Global.health -= int(Global.headColony / 2)
 	Global.health -= int(Global.bodyColony / 3)
 	Global.health -= 1
 	Global.health = max(Global.health, 0)
 	
+	### применяем действия из текущей мысли и планируем новую
 	apply_thought()
 	plan_thought()
+	
+	### не даём здоровью выйти за рамки
+	Global.health = clamp(Global.health, 0, currentLandlord["health"])
 	
 	shake(landlord_texturerect, 2.0, 16)
 	
@@ -231,15 +244,7 @@ func update_label():
 		return
 	
 	if Global.health <= 0:
-		landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
-		yield(get_tree().create_timer(0.5), "timeout")
-		fade.modulate.a = 0.0
-		fade.show()
-		tween.interpolate_property(fade, "modulate:a", 0.0, 1.0, 2.5)
-		tween.start()
-		yield(get_tree().create_timer(2.5), "timeout")
-		get_tree().change_scene("res://scenes/gameover.tscn")
-		
+		go_to_next_scene("res://scenes/gameover.tscn")
 		round_over = true
 		return
 	if is_scared():
@@ -260,6 +265,7 @@ func go_to_next_scene(scenePath: String):
 	tween.interpolate_property(bottom, "modulate:a", 1.0, 0.0, 1.0)
 	tween.interpolate_property(right, "modulate:a", 1.0, 0.0, 1.0)
 	tween.interpolate_property(top, "modulate:a", 1.0, 0.0, 1.0)
+	tween.interpolate_property(p_bottom, "modulate:a", 1.0, 0.0, 1.0)
 	tween.interpolate_property(thought_label.get_parent(), "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
 	
@@ -320,38 +326,63 @@ func make_thought(name: String, zone: String) -> Dictionary:
 	var activity: Dictionary = Global.activities[name]
 	var danger: Dictionary = activity.get("danger", {})
 	if danger.has(zone):
-		return {"text": danger[zone]["texts"].pick_random(), "effect": danger[zone]["effect"]}
-	return {"text": activity["default_text"].pick_random(), "effect": activity["effect"]}
+		return {"text": danger[zone]["texts"].pick_random(), "effect": danger[zone]["effect"], "zone": zone}
+	return {"text": activity["default_text"].pick_random(), "effect": activity["effect"], "zone": activity.get("zone", "biggest")}
 
 func plan_thought():
 	thought = make_thought(pick_activity(), get_danger_zone())
-	thought_label.text = thought["text"]
-	thought_label.text = thought["text"] + "\n" + describe_effect(thought["effect"])
+	
+	tween.interpolate_property(thought_label, "modulate:a", 1.0, 0.0, 0.3)
+	tween.interpolate_property(thought_texturerect, "modulate:a", 1.0, 0.5, 0.3)
+	tween.start()
+	yield(get_tree().create_timer(0.4), "timeout")
+	
+	thought_label.text = tr(thought["text"]) + "\n" + describe_effect(thought["effect"], thought["zone"])
+	
+	tween.interpolate_property(thought_label, "modulate:a", 0.0, 1.0, 0.2)
+	tween.interpolate_property(thought_texturerect, "modulate:a", 0.5, 1.0, 0.2)
+	tween.start()
 
 func apply_thought():
 	var effect: Dictionary = thought["effect"]
 	Global.health += effect.get("health", 0)
-	change_colony(effect.get("colony", 0))
+	change_colony(effect.get("colony", 0), thought["zone"])
 
-func change_colony(amount: int):
-	var step = 1 if amount > 0 else -1
-	for i in abs(amount):
-		var options: Array = []
-		for zone in ["headColony", "bodyColony", "legsColony"]:
-			if step > 0 or Global.get(zone) > 0:
-				options.append(zone)
-		if options.empty(): return
-		var chosen = options.pick_random()
-		Global.set(chosen, Global.get(chosen) + step)
+func biggest_zone() -> String:
+	var zones = {"head": Global.headColony, "body": Global.bodyColony, "legs": Global.legsColony}
+	var best = "head"
+	for z in zones:
+		if zones[z] > zones[best]:
+			best = z
+	return best
 
-func describe_effect(effect: Dictionary) -> String:
+func change_colony(amount: int, zone: String):
+	if amount == 0: return
+	if not zone in ["head", "body", "legs", "biggest"]:
+		zone = "biggest"
+	if zone == "biggest": zone = biggest_zone()
+	if amount > 0 and Global.get(zone + "Colony") <= 0:
+		zone = biggest_zone()
+	var key = zone + "Colony"
+	Global.set(key, max(0, Global.get(key) + amount))
+
+func zone_label(zone: String):
+	match zone:
+		"head": return tr("Голова")
+		"body": return tr("Тело")
+		"legs": return tr("Ноги")
+	
+	### если не указана зона (голова, тело или ноги)
+	return zone_label(biggest_zone())
+
+func describe_effect(effect: Dictionary, zone: String) -> String:
 	var parts: Array = []
 	var health: int = effect.get("health", 0)
 	var colony: int = effect.get("colony", 0)
 	if health != 0:
-		parts.append("Здоровье %+d%%" % health)
+		parts.append(tr("Здоровье") + " %+d%%" % health)
 	if colony != 0:
-		parts.append("Колония %+d" % colony)
+		parts.append(tr("Колония") + " %+d (%s)" % [colony, zone_label(zone)])
 	if parts.empty():
-		return "[Без эффекта]"
+		return "[" + tr("Без эффекта") + "]"
 	return "[" + PoolStringArray(parts).join(", ") + "]"
