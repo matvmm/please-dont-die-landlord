@@ -5,6 +5,7 @@ var turns: int = 0
 var health: int = 100
 var maxCards: int = 0
 var guideWatched: bool = true
+var deck: Array = []
 
 var headColony: int = 0
 var bodyColony: int = 0
@@ -42,14 +43,14 @@ var landlords: Array = [
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
-		"health": 35, "need": 38,
+		"health": 42, "need": 38,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
 		"texture": "res://sprites/landlords/dog_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_dog_1.png",
-		"health": 51, "need": 53,
+		"health": 76, "need": 68,
 		"activities": {"zoomies": 4, "snack": 4, "hunt": 3, "nap": 3, "vet": 2, "groom": 1, "hide": 1},
 	},
 	
@@ -63,14 +64,14 @@ var landlords: Array = [
 		"name": "Сонный сторож", "desc": "Спит. Много. Работа? Не слышал такого.",
 		"texture": "res://sprites/landlords/security_man_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_security_man_1.png",
-		"health": 145, "need": 84,
+		"health": 145, "need": 89,
 		"activities": {"sleep": 10, "nothing": 4, "bath": 2, "eat": 2, "jog": 1, "doctor": 1},
 	},
 	{
 		"name": "Старик", "desc": "Хилый. Любит врачей.",
 		"texture": "res://sprites/landlords/ded_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_ded_1.png",
-		"health": 70, "need": 130,
+		"health": 65, "need": 140,
 		"activities": {"doctor": 12, "sleep": 3, "nothing": 3, "ponos": 1, "scratch": 2, "eat": 2, "bath": 1},
 	},
 #	{

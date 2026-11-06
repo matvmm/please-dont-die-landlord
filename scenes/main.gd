@@ -249,7 +249,7 @@ func update_label(prev_colony: int = -1):
 		round_over = true
 		return
 	
-	if Global.health <= 0:
+	if Global.health <= 0 || (colony <= 0 && Global.currentLandlordIndex != 0):
 		go_to_next_scene("res://scenes/gameover.tscn")
 		round_over = true
 		return
