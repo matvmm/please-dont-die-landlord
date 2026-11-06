@@ -26,6 +26,7 @@ func _ready():
 	if Global.landlords.size() >= Global.currentLandlordIndex + 2+1:
 		landlord__2.texture_normal = load(Global.landlords[Global.currentLandlordIndex + 2]["texture"])
 		landlord__2__label.text = str(Global.landlords[Global.currentLandlordIndex + 2]["name"]) + "\n\n" + str(Global.landlords[Global.currentLandlordIndex + 2]["desc"])
+	else: landlord__2.hide()
 	
 	Global.health = 999
 	

@@ -7,6 +7,12 @@ var labelphrase: Array = [
 	"Сделано с помощью Godot Engine 3.6.2-stable.",
 	"Please Don't Die, Landlord."
 ]
+#var labelphrase: Array = [
+#	"UwU",
+#	"UwU",
+#	"UwU",
+#	"UwU",
+#]
 var double_click: int = 0
 var label_defpos: Vector2 = Vector2.ZERO
 onready var mn = $mN
