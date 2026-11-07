@@ -29,10 +29,13 @@ onready var thought_control = $CanvasLayer/thought
 onready var p_bottom = $CanvasLayer/pBottom
 onready var colonyadd_label = $CanvasLayer/pBottom/colonyadd
 
+var draw_pile: Array = []
+var discard_pile: Array = []
 var endturn_already_pressed: bool = false
 var currentLandlord: Dictionary
 var thought: Dictionary
 var round_over: bool = false
+var thought_muted: bool = false
 var mScreenMotion: Dictionary = {
 	"top": Vector2.ZERO,
 	"right": Vector2.ZERO,
@@ -54,6 +57,9 @@ func _ready():
 	landlord_texturerect.texture = load(currentLandlord["texture"])
 	healthbar.max_value = currentLandlord["health"]
 	Global.health = currentLandlord["health"]
+	if Global.deck.empty(): Global.reset_deck()
+	draw_pile = Global.deck.duplicate()
+	draw_pile.shuffle()
 	
 	mScreenMotion["bottom"] = bottom.rect_position
 	mScreenMotion["pBottom"] = p_bottom.rect_position
@@ -146,20 +152,14 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	yield(get_tree().create_timer(0.3), "timeout")
 	
 	### считаем бонус при верном попадании паразита, или наоборот вычет из колонии, если он не прижился.
-	var gain := 0
+	thought_muted = false
+	var gains := {1: 0, 2: 0, 3: 0}
 	for card in played:
-		randomize()
-#		gain += 1 + randi() % 3 if card.currentDefaultCard["bestPlace"] == attack else 1
-		if card.currentDefaultCard["bestPlace"] == attack:
-			match attack:
-				1: gain += 6 + randi() % 4
-				2: gain += 4 + randi() % 3
-				3: gain += 1 + randi() % 2
+		apply_card(card, attack, played, gains)
+		if card.card_data["seal"] == "clingy" and card.currentDefaultCard["bestPlace"] == attack:
+			draw_pile.append(card.card_data)
 		else:
-			match attack:
-				1: gain -= 6 + randi() % 4
-				2: gain -= 4 + randi() % 3
-				3: gain -= 1 + randi() % 2
+			discard_pile.append(card.card_data)
 		card.apply_animation()
 	yield(get_tree().create_timer(0.6), "timeout")
 	
@@ -174,9 +174,9 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	
 	### применяем бонус
 	match attack:
-		1: Global.headColony += gain
-		2: Global.bodyColony += gain
-		3: Global.legsColony += gain
+		1: Global.headColony += gains[1]
+		2: Global.bodyColony += gains[2]
+		3: Global.legsColony += gains[3]
 	
 	### не даём колонии уйти в минус
 	Global.headColony = max(Global.headColony, 0)
@@ -190,7 +190,7 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	Global.health = max(Global.health, 0)
 	
 	### применяем действия из текущей мысли и планируем новую
-	apply_thought()
+	if !thought_muted: apply_thought()
 	plan_thought()
 	
 	### не даём здоровью выйти за рамки
@@ -216,10 +216,75 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	
 	endturn_already_pressed = false
 
+func draw_card() -> Dictionary:
+	if draw_pile.empty():
+		draw_pile = discard_pile.duplicate()
+		draw_pile.shuffle()
+		discard_pile.clear()
+	if draw_pile.empty(): return {}
+	return draw_pile.pop_back()
+
 func give_cards(amount: int):
 	while cards.get_child_count() < amount:
 		yield(get_tree().create_timer(0.1), "timeout")
-		cards.add_child(load("res://scenes/cards/card1.tscn").instance())
+		var card = load("res://scenes/cards/card1.tscn").instance()
+		card.card_data = draw_card()
+		cards.add_child(card)
+
+func base_amount(zone: int) -> int:
+	match zone:
+		1: return 6 + randi() % 4
+		2: return 4 + randi() % 3
+	
+	return 1 + randi() % 2
+
+
+
+
+
+
+
+
+
+
+
+func apply_card(card, attack: int, played: Array, gains: Dictionary):
+	var best: int = card.currentDefaultCard["bestPlace"]
+	var seal: String = card.card_data["seal"]
+	var amount: int = base_amount(attack)
+	
+	if best == attack:
+		gains[attack] += amount
+		match seal:
+			"greedy":
+				gains[attack] += 2
+			"scavenger":
+				if is_scared():
+					gains[attack] += 3
+			"sleepy":
+				thought_muted = true
+			"pack":
+				for other in played:
+					if other != card and other.currentDefaultCard["bestPlace"] == attack:
+						gains[attack] += 1
+	else:
+		match seal:
+			"exile":
+				gains[best] += int(amount / 2)
+			"greedy":
+				gains[attack] -= amount + 2
+			_:
+				gains[attack] -= amount
+
+
+
+
+
+
+
+
+
+
 
 func update_label(prev_colony: int = -1):
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
@@ -305,10 +370,10 @@ func shake(node: Control, strength: float = 8.0, times: int = 8, stopshake: bool
 
 
 
-func is_scared():
+func is_scared() -> bool:
 	return Global.health <= currentLandlord["health"] / 2.0
 
-func get_danger_zone():
+func get_danger_zone() -> String:
 	if !is_scared(): return ""
 	
 	var zones = {"head": Global.headColony, "body": Global.bodyColony, "legs": Global.legsColony}

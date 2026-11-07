@@ -5,6 +5,7 @@ onready var tween = $"../../Tween"
 onready var card_desc = $"../../../../card_desc"
 onready var landlord_sprite = $"../../../../bg/landlord"
 
+var card_data: Dictionary
 var currentDefaultCard: Dictionary
 var active: bool = false
 var defaultPosition: Vector2
@@ -19,7 +20,8 @@ func _ready():
 	connect("mouse_exited", self, "_on_mouse_exited")
 	defaultPosition = rect_position
 	
-	currentDefaultCard = Global.defaultCards.pick_random()
+	if card_data.empty(): card_data = {"base": randi() % Global.defaultCards.size(), "seal": ""}
+	currentDefaultCard = Global.defaultCards[card_data["base"]]
 	texture_normal = load(currentDefaultCard["texture"])
 	
 	disabled = true
@@ -50,7 +52,14 @@ func _on_mouse_entered():
 	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE*1.1, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 	
-	card_desc.bbcode_text = "[center]" + currentDefaultCard["name"] + "\n\n" + currentDefaultCard["desc"]
+	var text: String = currentDefaultCard["name"]
+	var seal: String = card_data["seal"]
+	if seal != "":
+		text += " [color=gray][" + Global.seals[seal]["name"] + "]"
+	text += "[color=]\n\n" + currentDefaultCard["desc"]
+	if seal != "":
+		text += "[color=gray]\n\n" + Global.seals[seal]["desc"]
+	card_desc.bbcode_text = "[center]" + text
 
 func _on_mouse_exited():
 	card_desc.hide()

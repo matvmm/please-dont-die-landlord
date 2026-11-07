@@ -3,6 +3,7 @@ extends CanvasLayer
 
 var labelphrase: Array = [
 	"Игра сделана Drimer544 (Matvey Maksimovich)\nДля ЧРЕВАТОГО ДЖЕМА (2026) от OKNOgmdv",
+	"Музыка написана Scewix.",
 	"Помогали в тестировании\nULTRAЗемлеройка;\ntapoksila.",
 	"Сделано с помощью Godot Engine 3.6.2-stable.",
 	"Please Don't Die, Landlord."
@@ -48,7 +49,7 @@ func _ready():
 	label.text = labelphrase[1]
 	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
 	tween.start()
-	yield(get_tree().create_timer(4.0), "timeout")
+	yield(get_tree().create_timer(3.0), "timeout")
 	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 0.3)
 	tween.start()
 	yield(get_tree().create_timer(0.31), "timeout")
@@ -58,7 +59,7 @@ func _ready():
 	label.text = labelphrase[2]
 	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
 	tween.start()
-	yield(get_tree().create_timer(2.5), "timeout")
+	yield(get_tree().create_timer(3.5), "timeout")
 	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 0.3)
 	tween.start()
 	yield(get_tree().create_timer(0.31), "timeout")
@@ -66,6 +67,16 @@ func _ready():
 	label.percent_visible = 0.0
 	label.modulate.a = 1.0
 	label.text = labelphrase[3]
+	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
+	tween.start()
+	yield(get_tree().create_timer(2.5), "timeout")
+	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 0.3)
+	tween.start()
+	yield(get_tree().create_timer(0.31), "timeout")
+	
+	label.percent_visible = 0.0
+	label.modulate.a = 1.0
+	label.text = labelphrase[4]
 	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
 	tween.start()
 	yield(get_tree().create_timer(3.0), "timeout")

@@ -311,7 +311,6 @@ align = 1
 valign = 1
 
 [node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
-visible = false
 margin_left = 8.0
 margin_top = 237.0
 margin_right = 200.0
@@ -328,6 +327,7 @@ text = "TEST CARD
 [1]
 
 Nothing do."
+fit_content_height = true
 
 [node name="guidebutton" type="TextureButton" parent="CanvasLayer"]
 modulate = Color( 1, 1, 1, 0.25 )

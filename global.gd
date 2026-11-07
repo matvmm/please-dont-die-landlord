@@ -29,6 +29,22 @@ var defaultCards: Array = [
 	{"name": "Пиявка", "desc": "Обожает грязную щиколотку.", "texture": "res://sprites/cards/leech_card_1.png", "bestPlace": Place.LEGS},
 ]
 
+var seals: Dictionary = {
+	"exile": {"name": "Ссыльная", "desc": "Не в ту зону? Не гибнет, а ползёт домой. Половина прироста уходит в родную зону."},
+	"pack": {"name": "Стая", "desc": "Вместе веселее. В своей зоне +1 за каждую другую сыгранную карту с той же любимой зоной."},
+	"clingy": {"name": "Цепкая", "desc": "Вцепилась намертво. Попала в свою зону: на следующем ходу снова в руке."},
+	"sleepy": {"name": "Сонная", "desc": "Хозяин клюёт носом. Попала в свою зону: его мысль в этот ход не сработает."},
+	"scavenger": {"name": "Падальщица", "desc": "Любит, когда хозяину плохо. Пока он напуган, в своей зоне +3."},
+	"greedy": {"name": "Жадная", "desc": "Всё или ничего. В своей зоне +2, в чужой ещё -2."},
+}
+
+func reset_deck():
+	deck.clear()
+	for i in defaultCards.size():
+		deck.append({"base": i, "seal": seals.keys().pick_random()})
+
+
+
 var landlords: Array = [
 	# animals
 	
