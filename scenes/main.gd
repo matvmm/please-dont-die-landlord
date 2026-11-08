@@ -23,7 +23,6 @@ onready var fade = $CanvasLayer/fade
 onready var defaultanimation = $defaultanimation
 onready var thought_texturerect = $CanvasLayer/thought/TextureRect
 onready var thought_label = $CanvasLayer/thought/Label
-onready var cpu_particles_2d_healthbar = $CanvasLayer/top/healthbar/CPUParticles2D
 onready var shading = $CanvasLayer/shading
 onready var thought_control = $CanvasLayer/thought
 onready var p_bottom = $CanvasLayer/pBottom
@@ -198,7 +197,7 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	
 	shake(landlord_texturerect, 2.0, 16)
 	
-	tween.interpolate_property(bg, "modulate:a", bg.modulate.a, clamp(0.2 - Global.health * 0.002, 0.0, 0.2), 5.0)
+	tween.interpolate_property(bg, "modulate:a", bg.modulate.a, clamp(0.1 - Global.health * 0.001, 0.0, 0.2), 5.0)
 	tween.start()
 	
 #	tween.interpolate_property(top, "rect_scale", Vector2.ONE*1.05, Vector2.ONE, 0.6, Tween.TRANS_BOUNCE, Tween.EASE_OUT)
@@ -267,12 +266,22 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 				for other in played:
 					if other != card and other.currentDefaultCard["bestPlace"] == attack:
 						gains[attack] += 1
+			"megacool":
+				gains[attack] = currentLandlord["need"]
+			"randomity":
+				randomize()
+				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 2))
 	else:
 		match seal:
 			"exile":
 				gains[best] += int(amount / 2)
 			"greedy":
 				gains[attack] -= amount + 2
+			"megacool":
+				gains[attack] = currentLandlord["need"]
+			"randomity":
+				randomize()
+				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 2))
 			_:
 				gains[attack] -= amount
 
@@ -310,7 +319,7 @@ func update_label(prev_colony: int = -1):
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
 			go_to_next_scene("res://scenes/win.tscn")
 			return
-		go_to_next_scene("res://scenes/roadmap.tscn")
+		go_to_next_scene("res://scenes/seal_give.tscn")
 		round_over = true
 		return
 	
@@ -321,11 +330,9 @@ func update_label(prev_colony: int = -1):
 	if is_scared():
 		landlord_texturerect.texture = load(currentLandlord["lowhealth_texture"])
 		shake(landlord_texturerect, 1.0, 9999999)
-		cpu_particles_2d_healthbar.emitting = true
 	else:
 		landlord_texturerect.texture = load(currentLandlord["texture"])
 		shake(landlord_texturerect, 0.0, 0, true)
-		cpu_particles_2d_healthbar.emitting = false
 
 func go_to_next_scene(scenePath: String):
 	if scenePath == "": return

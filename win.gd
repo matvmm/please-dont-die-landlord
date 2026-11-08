@@ -11,11 +11,11 @@ onready var mn = $mN
 
 func _ready():
 	label.text = (
-		"Поздравляем! Вы смогли\nразвить колонию из " + str(Global.headColony+Global.bodyColony+Global.legsColony) + " паразитов!\n" + 
-		"Вы сделали " + str(Global.turns) + " ходов!\n" +
-		"Вы паратизировали " + str(Global.currentLandlordIndex+1) + " существ!\n\n" +
-		"Теперь ваши паразиты будут продолжать\nмучать других существ, заставляя\nих шугаться от любого урчания в животе.\n\n" + 
-		"Это ли не повод для гордости?"
+		tr("Поздравляем! Вы смогли развить колонию из %d паразитов!") % (Global.headColony+Global.bodyColony+Global.legsColony) + "\n" +
+		tr("Вы сделали %d ходов!") % Global.turns + "\n" +
+		tr("Вы паразитировали %d существ!") % (Global.currentLandlordIndex+1) + "\n\n" +
+		tr("Теперь ваши паразиты будут продолжать мучать других существ, заставляя их шугаться от любого урчания в животе.") + "\n\n" +
+		tr("Это ли не повод для гордости?")
 	)
 	
 	Global.play_audio("")
@@ -37,36 +37,6 @@ func _ready():
 	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 5.0)
 	tween.start()
 	yield(get_tree().create_timer(5.50), "timeout")
-#
-#	label.percent_visible = 0.0
-#	label.modulate.a = 1.0
-#	label.text = labelphrase[1]
-#	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
-#	tween.start()
-#	yield(get_tree().create_timer(4.0), "timeout")
-#	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 0.3)
-#	tween.start()
-#	yield(get_tree().create_timer(0.31), "timeout")
-#
-#	label.percent_visible = 0.0
-#	label.modulate.a = 1.0
-#	label.text = labelphrase[2]
-#	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
-#	tween.start()
-#	yield(get_tree().create_timer(2.5), "timeout")
-#	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 0.3)
-#	tween.start()
-#	yield(get_tree().create_timer(0.31), "timeout")
-#
-#	label.percent_visible = 0.0
-#	label.modulate.a = 1.0
-#	label.text = labelphrase[3]
-#	tween.interpolate_property(label, "percent_visible", 0.0, 1.0, 0.5)
-#	tween.start()
-#	yield(get_tree().create_timer(3.0), "timeout")
-#	tween.interpolate_property(label, "modulate:a", 1.0, 0.0, 2.0)
-#	tween.start()
-#	yield(get_tree().create_timer(3.0), "timeout")
 	
 	get_tree().change_scene("res://scenes/intro.tscn")
 

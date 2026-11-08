@@ -36,12 +36,15 @@ var seals: Dictionary = {
 	"sleepy": {"name": "Сонная", "desc": "Хозяин клюёт носом. Попала в свою зону: его мысль в этот ход не сработает."},
 	"scavenger": {"name": "Падальщица", "desc": "Любит, когда хозяину плохо. Пока он напуган, в своей зоне +3."},
 	"greedy": {"name": "Жадная", "desc": "Всё или ничего. В своей зоне +2, в чужой ещё -2."},
+	"megacool": {"name": "МЕГАКРУТО", "desc": "МГНОВЕННОЕ ПОПОЛНЕНИЕ КОЛОНИИ ДО НУЖНОГО УРОВНЯ!"},
+	"randomity": {"name": "???", "desc": "Случайным образом увеличивает/уменьшает колонию. Лудоманы будут в восторге от этой печати!"},
 }
 
 func reset_deck():
 	deck.clear()
 	for i in defaultCards.size():
-		deck.append({"base": i, "seal": seals.keys().pick_random()})
+		deck.append({"base": i, "seal": ""})
+#		deck.append({"base": i, "seal": seals.keys().pick_random()})
 
 
 

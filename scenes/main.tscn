@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://sprites/other/fg2.png" type="Texture" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://sprites/other/guide1.png" type="Texture" id=10]
 [ext_resource path="res://sprites/landlords/zhirni_veriti_1.png" type="Texture" id=11]
 [ext_resource path="res://scenes/guide.gd" type="Script" id=12]
+[ext_resource path="res://scenes/pause.gd" type="Script" id=13]
+[ext_resource path="res://themes/Classic-Console-Neue-Regular.ttf" type="DynamicFontData" id=14]
 
 [sub_resource type="AnimatedTexture" id=2]
 frames = 4
@@ -24,6 +26,18 @@ frame_2/delay_sec = 0.0
 frame_3/texture = ExtResource( 7 )
 frame_3/delay_sec = 0.0
 
+[sub_resource type="Gradient" id=10]
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture2D" id=11]
+gradient = SubResource( 10 )
+width = 4
+height = 16
+
+[sub_resource type="Curve" id=12]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.12375, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.87375, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 1, 1, 1, 1 )
 
@@ -34,19 +48,6 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 1, 1, 1, 1 )
-
-[sub_resource type="Gradient" id=5]
-interpolation_mode = 1
-offsets = PoolRealArray( 1 )
-colors = PoolColorArray( 1, 1, 1, 1 )
-
-[sub_resource type="GradientTexture2D" id=6]
-gradient = SubResource( 5 )
-width = 4
-height = 4
-
-[sub_resource type="Curve" id=7]
-_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.23875, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 0.784314 )
@@ -66,6 +67,12 @@ fill = 1
 fill_from = Vector2( 0.5, 0.5 )
 fill_to = Vector2( 2.8, 0 )
 
+[sub_resource type="DynamicFont" id=13]
+size = 32
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 14 )
+
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
 
@@ -81,6 +88,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 texture = SubResource( 2 )
 stretch_mode = 2
+
+[node name="rain_event" type="CPUParticles2D" parent="CanvasLayer/bg"]
+visible = false
+position = Vector2( 312, 0 )
+emitting = false
+amount = 24
+lifetime = 1.2
+preprocess = 1.2
+speed_scale = 2.0
+texture = SubResource( 11 )
+emission_shape = 2
+emission_rect_extents = Vector2( 384, 1 )
+gravity = Vector2( 64, 784 )
+angular_velocity = 10.0
+scale_amount = 0.2
+scale_amount_random = 0.5
+scale_amount_curve = SubResource( 12 )
+color = Color( 1, 1, 1, 0.75 )
 
 [node name="landlord" type="TextureRect" parent="CanvasLayer/bg"]
 anchor_left = 0.5
@@ -143,19 +168,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 text = " Health:"
 valign = 1
-
-[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/top/healthbar"]
-position = Vector2( 262, 23 )
-emitting = false
-amount = 12
-lifetime = 0.75
-fixed_fps = 30
-fract_delta = false
-texture = SubResource( 6 )
-emission_shape = 2
-emission_rect_extents = Vector2( 262, 1 )
-gravity = Vector2( 0, 128 )
-scale_amount_curve = SubResource( 7 )
 
 [node name="right" type="Control" parent="CanvasLayer"]
 anchor_left = 1.0
@@ -311,6 +323,7 @@ align = 1
 valign = 1
 
 [node name="card_desc" type="RichTextLabel" parent="CanvasLayer"]
+visible = false
 margin_left = 8.0
 margin_top = 237.0
 margin_right = 200.0
@@ -396,6 +409,33 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 1 )
+
+[node name="pause" type="Control" parent="CanvasLayer"]
+pause_mode = 2
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 13 )
+
+[node name="bg" type="ColorRect" parent="CanvasLayer/pause"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.9 )
+
+[node name="Label" type="Label" parent="CanvasLayer/pause"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -416.0
+rect_min_size = Vector2( 0, 64 )
+custom_fonts/font = SubResource( 13 )
+text = "ИГРА ПРИОСТАНОВЛЕНА"
+align = 1
+valign = 2
+
+[node name="settings" type="VBoxContainer" parent="CanvasLayer/pause"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 96.0
 
 [node name="Tween" type="Tween" parent="."]
 

@@ -2,17 +2,18 @@
 extends CanvasLayer
 
 var labelphrase: Array = [
-	"Игра сделана Drimer544 (Matvey Maksimovich)\nДля ЧРЕВАТОГО ДЖЕМА (2026) от OKNOgmdv",
-	"Музыка написана Scewix.",
-	"Помогали в тестировании\nULTRAЗемлеройка;\ntapoksila.",
-	"Сделано с помощью Godot Engine 3.6.2-stable.",
-	"Please Don't Die, Landlord."
+	tr("Игра сделана Drimer544 (Matvey Maksimovich)\nДля ЧРЕВАТОГО ДЖЕМА (2026) от OKNOgmdv"),
+	tr("Музыка написана Scewix."),
+	tr("Помогали в тестировании\nULTRAЗемлеройка;\ntapoksila."),
+	tr("Сделано с помощью Godot Engine 3.6.2-stable."),
+	tr("Please Don't Die, Landlord.")
 ]
 #var labelphrase: Array = [
 #	"UwU",
-#	"UwU",
-#	"UwU",
-#	"UwU",
+#	"0w0",
+#	"-w-",
+#	"*w*",
+#	"'w'",
 #]
 var double_click: int = 0
 var label_defpos: Vector2 = Vector2.ZERO

@@ -7,13 +7,22 @@ onready var landlord__1 = $cont/landlord_1
 onready var landlord__2 = $cont/landlord_2
 onready var landlord__1__label = $cont/landlord_1_label
 onready var landlord__2__label = $cont/landlord_2_label
+onready var title_label = $title
+onready var mn = $mN
 
 onready var fade = $fade
 onready var tween = $Tween
 
+var title_label_defpos: Vector2 = Vector2.ZERO
+var cont_defpos: Vector2 = Vector2.ZERO
+
 
 func _ready():
 	cont.rect_position.x = 240.0
+	
+	cont_defpos = cont.rect_position
+	title_label_defpos = title_label.rect_position
+	
 	landlord__1.connect("pressed", self, "_on_landlord__1_pressed")
 	landlord__2.connect("pressed", self, "_on_landlord__2_pressed")
 	
@@ -37,8 +46,15 @@ func _ready():
 	yield(get_tree().create_timer(1.0), "timeout")
 	fade.hide()
 	
-	tween.interpolate_property(cont, "rect_position:x", cont.rect_position.x, -160.0, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+	tween.interpolate_property(cont, "rect_position:x", cont.rect_position.x, -220.0, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 	tween.start()
+	yield(get_tree().create_timer(1.5), "timeout")
+	cont_defpos = cont.rect_position
+
+func _process(delta):
+	var m: Vector2 = mn.get_global_mouse_position()
+	title_label.rect_position = lerp(title_label.rect_position, title_label_defpos + m * 0.02, 15 * delta)
+	cont.rect_position = lerp(cont.rect_position, cont_defpos + m * 0.01, 15 * delta)
 
 func _on_landlord__1_pressed():
 	Global.currentLandlordIndex += 1

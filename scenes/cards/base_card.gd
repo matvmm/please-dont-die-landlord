@@ -4,6 +4,7 @@ extends TextureButton
 onready var tween = $"../../Tween"
 onready var card_desc = $"../../../../card_desc"
 onready var landlord_sprite = $"../../../../bg/landlord"
+onready var seal_texturerect = $seal_texturerect
 
 var card_data: Dictionary
 var currentDefaultCard: Dictionary
@@ -23,6 +24,9 @@ func _ready():
 	if card_data.empty(): card_data = {"base": randi() % Global.defaultCards.size(), "seal": ""}
 	currentDefaultCard = Global.defaultCards[card_data["base"]]
 	texture_normal = load(currentDefaultCard["texture"])
+	if card_data["seal"] != "":
+		seal_texturerect.rect_rotation = rand_range(-180, 180)
+		seal_texturerect.show()
 	
 	disabled = true
 	tween.interpolate_property(self, "rect_position:y", defaultPosition.y + 128.0, defaultPosition.y, 1.0, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
@@ -52,13 +56,13 @@ func _on_mouse_entered():
 	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE*1.1, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 	
-	var text: String = currentDefaultCard["name"]
+	var text: String = tr(currentDefaultCard["name"])
 	var seal: String = card_data["seal"]
 	if seal != "":
-		text += " [color=gray][" + Global.seals[seal]["name"] + "]"
-	text += "[color=]\n\n" + currentDefaultCard["desc"]
+		text += " [color=gray][" + tr(Global.seals[seal]["name"]) + "]"
+	text += "\n\n[color=]" + tr(currentDefaultCard["desc"])
 	if seal != "":
-		text += "[color=gray]\n\n" + Global.seals[seal]["desc"]
+		text += "\n\n[color=gray]" + tr(Global.seals[seal]["desc"])
 	card_desc.bbcode_text = "[center]" + text
 
 func _on_mouse_exited():
