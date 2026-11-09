@@ -6,6 +6,7 @@ var health: int = 100
 var maxCards: int = 0
 var guideWatched: bool = true
 var deck: Array = []
+var parasitedLandlords: int = 0
 
 var headColony: int = 0
 var bodyColony: int = 0
@@ -18,6 +19,7 @@ var defaultCards: Array = [
 	{"name": "Кордицепс", "desc": "Дёргает за ниточки твоего сознания.", "texture": "res://sprites/cards/cordiceps_card_1.png", "bestPlace": Place.HEAD},
 	{"name": "Глазной червь", "desc": "Прогуливается по глазному яблоку.", "texture": "res://sprites/cards/eye_parasite_card_1.png", "bestPlace": Place.HEAD},
 	{"name": "Язычная вошь", "desc": "Заменяет язык. Без шуток.", "texture": "res://sprites/cards/tongue_parasite_card_1.png", "bestPlace": Place.HEAD},
+	{"name": "Демодекс", "desc": "Живёт у корня ресницы. Ты её даже не заметишь.", "texture": "res://sprites/cards/demodex_card_1.png", "bestPlace": Place.HEAD},
 	
 	{"name": "Ленточный червь", "desc": "Много ест. Очень.", "texture": "res://sprites/cards/tapeworm_card_1.png", "bestPlace": Place.BODY},
 	{"name": "Личинка осы", "desc": "Прячется, потом вылупляется в организме.", "texture": "res://sprites/cards/wasp_larva_card_1.png", "bestPlace": Place.BODY},
@@ -27,17 +29,46 @@ var defaultCards: Array = [
 	{"name": "Ришта", "desc": "Выходит через ногу. Медленно.", "texture": "res://sprites/cards/rista_card_1.png", "bestPlace": Place.LEGS},
 	{"name": "Песчаная блоха", "desc": "Вгрызается в пальцы ног.", "texture": "res://sprites/cards/sand_parasite_card_1.png", "bestPlace": Place.LEGS},
 	{"name": "Пиявка", "desc": "Обожает грязную щиколотку.", "texture": "res://sprites/cards/leech_card_1.png", "bestPlace": Place.LEGS},
+	{"name": "Анкилостома", "desc": "Заходит через босую пятку. Остаётся жить внутри.", "texture": "res://sprites/cards/hookworm_card_1.png", "bestPlace": Place.LEGS},
 ]
 
 var seals: Dictionary = {
-	"exile": {"name": "Ссыльная", "desc": "Не в ту зону? Не гибнет, а ползёт домой. Половина прироста уходит в родную зону."},
-	"pack": {"name": "Стая", "desc": "Вместе веселее. В своей зоне +1 за каждую другую сыгранную карту с той же любимой зоной."},
-	"clingy": {"name": "Цепкая", "desc": "Вцепилась намертво. Попала в свою зону: на следующем ходу снова в руке."},
-	"sleepy": {"name": "Сонная", "desc": "Хозяин клюёт носом. Попала в свою зону: его мысль в этот ход не сработает."},
-	"scavenger": {"name": "Падальщица", "desc": "Любит, когда хозяину плохо. Пока он напуган, в своей зоне +3."},
-	"greedy": {"name": "Жадная", "desc": "Всё или ничего. В своей зоне +2, в чужой ещё -2."},
-	"megacool": {"name": "МЕГАКРУТО", "desc": "МГНОВЕННОЕ ПОПОЛНЕНИЕ КОЛОНИИ ДО НУЖНОГО УРОВНЯ!"},
-	"randomity": {"name": "???", "desc": "Случайным образом увеличивает/уменьшает колонию. Лудоманы будут в восторге от этой печати!"},
+	"exile": {
+		"name": "Ссыльная",
+		"desc": "Не в ту зону? Не гибнет, а ползёт домой. Половина прироста уходит в родную зону.",
+		"texture": "res://sprites/seals/exile_seal1.png"
+	},
+	"pack": {
+		"name": "Стая",
+		"desc": "Вместе веселее. В своей зоне +3 за каждую другую сыгранную карту с той же любимой зоной.",
+		"texture": "res://sprites/seals/pack_seal2.png"
+	},
+	"clingy": {
+		"name": "Цепкая",
+		"desc": "Вцепилась намертво. Попала в свою зону: на следующем ходу снова в руке.",
+		"texture": "res://sprites/seals/clingy_seal1.png"
+	},
+	"sleepy": {
+		"name": "Сонная",
+		"desc": "Хозяин клюёт носом. Попала в свою зону: его мысль в этот ход не сработает.",
+		"texture": "res://sprites/seals/sleepy_seal1.png"
+	},
+	"scavenger": {
+		"name": "Падальщица",
+		"desc": "Любит, когда хозяину плохо. Пока он напуган, в своей зоне +6.",
+		"texture": "res://sprites/seals/scavenger_seal1.png"
+	},
+	"greedy": {
+		"name": "Жадная",
+		"desc": "Всё или ничего. В своей зоне +3, в чужой ещё -6.",
+		"texture": "res://sprites/seals/greedy_seal1.png"
+	},
+	"randomity": {
+		"name": "???",
+		"desc": "Случайным образом увеличивает/уменьшает колонию. Лудоманы будут в восторге от этой печати!",
+		"texture": "res://sprites/seals/randomity_seal1.png"
+	},
+#	"megacool": {"name": "МЕГАКРУТО", "desc": "МГНОВЕННОЕ ПОПОЛНЕНИЕ КОЛОНИИ ДО НУЖНОГО УРОВНЯ!"},
 }
 
 func reset_deck():
@@ -66,10 +97,17 @@ var landlords: Array = [
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
+		"name": "Дворняга", "desc": "Ищет еду. Ищет тепло. Находит пинки.",
+		"texture": "res://sprites/landlords/test_body_1.png",
+		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"health": 58, "need": 58,
+		"activities": {"hide": 4, "snack": 4, "nap": 3, "hunt": 2, "zoomies": 1},
+	},
+	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
 		"texture": "res://sprites/landlords/dog_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_dog_1.png",
-		"health": 76, "need": 68,
+		"health": 76, "need": 72,
 		"activities": {"zoomies": 4, "snack": 4, "hunt": 3, "nap": 3, "vet": 2, "groom": 1, "hide": 1},
 	},
 	
@@ -80,26 +118,40 @@ var landlords: Array = [
 	# humans
 	
 	{
+		"name": "Бездомный", "desc": "Спит где придётся. Никто не заметит.",
+		"texture": "res://sprites/landlords/test_body_1.png",
+		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"health": 110, "need": 90,
+		"activities": {"sleep": 6, "nothing": 4, "scratch": 3, "drink": 3, "eat": 2},
+	},
+	{
 		"name": "Сонный сторож", "desc": "Спит. Много. Работа? Не слышал такого.",
 		"texture": "res://sprites/landlords/security_man_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_security_man_1.png",
-		"health": 145, "need": 89,
+		"health": 145, "need": 129,
 		"activities": {"sleep": 10, "nothing": 4, "bath": 2, "eat": 2, "jog": 1, "doctor": 1},
 	},
 	{
 		"name": "Старик", "desc": "Хилый. Любит врачей.",
 		"texture": "res://sprites/landlords/ded_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_ded_1.png",
-		"health": 65, "need": 140,
+		"health": 65, "need": 146,
 		"activities": {"doctor": 12, "sleep": 3, "nothing": 3, "ponos": 1, "scratch": 2, "eat": 2, "bath": 1},
 	},
-#	{
-#		"name": "Обжора", "desc": "Ест. Потом жалеет.",
-#		"texture": "res://sprites/landlords/test_body_1.png",
-#		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
-#		"health": 275, "need": 178,
-#		"activities": {"eat": 12, "ponos": 7, "sleep": 3, "drink": 2, "nothing": 1, "doctor": 1},
-#	},
+	{
+		"name": "Обжора", "desc": "Ест. Потом жалеет.",
+		"texture": "res://sprites/landlords/test_body_1.png",
+		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"health": 275, "need": 248,
+		"activities": {"eat": 12, "ponos": 7, "sleep": 3, "drink": 2, "nothing": 1, "doctor": 1},
+	},
+	{
+		"name": "Домовладелец", "desc": "Берёт плату за всё. Даже за воздух.",
+		"texture": "res://sprites/landlords/test_body_1.png",
+		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"health": 162, "need": 512,
+		"activities": {"rent": 8, "eat": 5, "drink": 1, "sleep": 3, "nothing": 2, "doctor": 2},
+	},
 ]
 
 var activities: Dictionary = {
@@ -189,7 +241,9 @@ var activities: Dictionary = {
 			"body": {"texts": ["Желудок горит, но я наливаю ещё.", "Пузо в огне, а хочется добавки."], "effect": {"health": -4, "colony": -3}},
 		},
 	},
-
+	
+	
+	
 	"nap": {
 		"default_text": ["Тёплое местечко. Время подремать.", "Глаза закрываются. Всего пять минуточек."],
 		"effect": {"health": +5},
@@ -248,6 +302,27 @@ var activities: Dictionary = {
 		"danger": {
 			"head": {"texts": ["Переноска? Какая переноска? Кто я?"], "effect": {"health": -3}},
 			"legs": {"texts": ["Падаю на пол. Меня никто никуда не понесёт."], "effect": {"health": -2}},
+		},
+	},
+	"rent": {
+		"default_text": ["Так-так-так, когда Михаилу платить за аренду..?", "Тааааак, когда Ольге платить за аренду..?"],
+		"zone": "head",
+		"effect": {"health": +3},
+		"danger": {
+			"head": {"texts": ["Таак, когда Ми... *КАШЕЛЬ*, к-кому платить?"], "effect": {"health": -4}},
+			"legs": {"texts": ["А Виктория когда в последний раз платила за аренду..?"], "effect": {"health": -3}},
+		},
+	},
+	
+	
+	
+	"event_rain_weather": {
+		"default_text": ["Опять дождь. Когда он уже кончится..?", "Ненавижу дождливую погоду, скукота."],
+		"zone": "biggest",
+		"effect": {"health": +15 ,"colony": -5},
+		"danger": {
+			"head": {"texts": ["Я уже не МОГУ ТЕРПЕТЬ ЭТОТ ДОЖДЬ!!!"], "effect": {"health": -12}},
+			"legs": {"texts": ["Идти в магазин, в такой дождь... Сегодня не поем."], "effect": {"health": -14, "colony": -6}},
 		},
 	},
 }

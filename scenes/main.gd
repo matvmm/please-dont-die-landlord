@@ -27,6 +27,7 @@ onready var shading = $CanvasLayer/shading
 onready var thought_control = $CanvasLayer/thought
 onready var p_bottom = $CanvasLayer/pBottom
 onready var colonyadd_label = $CanvasLayer/pBottom/colonyadd
+onready var colonybar = $CanvasLayer/pBottom/colonybar
 
 var draw_pile: Array = []
 var discard_pile: Array = []
@@ -55,6 +56,7 @@ func _ready():
 	currentLandlord = Global.landlords[Global.currentLandlordIndex]
 	landlord_texturerect.texture = load(currentLandlord["texture"])
 	healthbar.max_value = currentLandlord["health"]
+	colonybar.max_value = currentLandlord["need"]
 	Global.health = currentLandlord["health"]
 	if Global.deck.empty(): Global.reset_deck()
 	draw_pile = Global.deck.duplicate()
@@ -256,16 +258,16 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 		gains[attack] += amount
 		match seal:
 			"greedy":
-				gains[attack] += 2
+				gains[attack] += 3
 			"scavenger":
 				if is_scared():
-					gains[attack] += 3
+					gains[attack] += 6
 			"sleepy":
 				thought_muted = true
 			"pack":
 				for other in played:
-					if other != card and other.currentDefaultCard["bestPlace"] == attack:
-						gains[attack] += 1
+					if other != card && other.currentDefaultCard["bestPlace"] == attack:
+						gains[attack] += 3
 			"megacool":
 				gains[attack] = currentLandlord["need"]
 			"randomity":
@@ -276,12 +278,12 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 			"exile":
 				gains[best] += int(amount / 2)
 			"greedy":
-				gains[attack] -= amount + 2
+				gains[attack] -= amount + 6
 			"megacool":
 				gains[attack] = currentLandlord["need"]
 			"randomity":
 				randomize()
-				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 2))
+				gains[attack] += int(rand_range(-currentLandlord["need"] / 4, currentLandlord["need"] / 4))
 			_:
 				gains[attack] -= amount
 
@@ -300,6 +302,8 @@ func update_label(prev_colony: int = -1):
 	turnlabel.text = tr("Ход") + ": " + str(Global.turns)
 	colonylabel.text = tr("Колония") + ": " + str(colony) + " / " + str(currentLandlord["need"])
 	tween.interpolate_property(healthbar, "value", healthbar.value, Global.health, 0.4, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.interpolate_property(colonybar, "value", colonybar.value, colony, 0.4, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.interpolate_property(colonybar, "modulate:a", 1.0, 0.1, 1.5, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	if prev_colony != -1:
 		colonyadd_label.text = ("+" if prev_colony < colony else "") + str(colony - prev_colony)
 		tween.interpolate_property(colonyadd_label, "rect_position:y", 11.0-colonyadd_label.rect_size.y, 11.0-18.0, 0.75, Tween.TRANS_CUBIC, Tween.EASE_OUT)
@@ -316,6 +320,7 @@ func update_label(prev_colony: int = -1):
 #	shading.texture.fill_to = Vector2(2.5, 0) if !is_scared() else Vector2(1.5, 0)
 	
 	if colony >= currentLandlord["need"]:
+		Global.parasitedLandlords += 1
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
 			go_to_next_scene("res://scenes/win.tscn")
 			return

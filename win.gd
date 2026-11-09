@@ -13,7 +13,7 @@ func _ready():
 	label.text = (
 		tr("Поздравляем! Вы смогли развить колонию из %d паразитов!") % (Global.headColony+Global.bodyColony+Global.legsColony) + "\n" +
 		tr("Вы сделали %d ходов!") % Global.turns + "\n" +
-		tr("Вы паразитировали %d существ!") % (Global.currentLandlordIndex+1) + "\n\n" +
+		tr("Вы паразитировали %d существ!") % (Global.parasitedLandlords) + "\n\n" +
 		tr("Теперь ваши паразиты будут продолжать мучать других существ, заставляя их шугаться от любого урчания в животе.") + "\n\n" +
 		tr("Это ли не повод для гордости?")
 	)
@@ -25,6 +25,8 @@ func _ready():
 	Global.bodyColony = 0
 	Global.legsColony = 0
 	Global.turns = 0
+	Global.parasitedLandlords = 0
+	Global.reset_deck()
 	
 	label_defpos = label.rect_position
 	

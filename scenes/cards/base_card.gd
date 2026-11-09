@@ -25,7 +25,8 @@ func _ready():
 	currentDefaultCard = Global.defaultCards[card_data["base"]]
 	texture_normal = load(currentDefaultCard["texture"])
 	if card_data["seal"] != "":
-		seal_texturerect.rect_rotation = rand_range(-180, 180)
+		seal_texturerect.rect_rotation = rand_range(-15, 15)
+		seal_texturerect.texture = load(Global.seals[card_data["seal"]]["texture"])
 		seal_texturerect.show()
 	
 	disabled = true

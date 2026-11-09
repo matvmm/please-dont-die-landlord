@@ -23,6 +23,8 @@ func _ready():
 	Global.bodyColony = 0
 	Global.legsColony = 0
 	Global.turns = 0
+	Global.parasitedLandlords = 0
+	Global.reset_deck()
 	
 	label_defpos = label.rect_position
 	

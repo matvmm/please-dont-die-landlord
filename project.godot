@@ -70,7 +70,7 @@ PAUSE={
 
 [locale]
 
-test="en"
+test="ru"
 fallback="ru"
 translations=PoolStringArray( "res://localization/translations.csv", "res://localization/translations.en.translation" )
 

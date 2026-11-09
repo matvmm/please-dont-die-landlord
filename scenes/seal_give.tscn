@@ -34,9 +34,9 @@ anchor_bottom = 1.0
 
 [node name="seal_1" type="TextureButton" parent="seals"]
 margin_left = 128.0
-margin_top = 216.0
+margin_top = 184.0
 margin_right = 192.0
-margin_bottom = 280.0
+margin_bottom = 248.0
 rect_pivot_offset = Vector2( 32, 32 )
 texture_normal = ExtResource( 2 )
 expand = true
@@ -44,9 +44,9 @@ stretch_mode = 5
 
 [node name="seal_2" type="TextureButton" parent="seals"]
 margin_left = 288.0
-margin_top = 216.0
+margin_top = 184.0
 margin_right = 352.0
-margin_bottom = 280.0
+margin_bottom = 248.0
 rect_pivot_offset = Vector2( 32, 32 )
 texture_normal = ExtResource( 2 )
 expand = true
@@ -54,9 +54,9 @@ stretch_mode = 5
 
 [node name="seal_3" type="TextureButton" parent="seals"]
 margin_left = 448.0
-margin_top = 216.0
+margin_top = 184.0
 margin_right = 512.0
-margin_bottom = 280.0
+margin_bottom = 248.0
 rect_pivot_offset = Vector2( 32, 32 )
 texture_normal = ExtResource( 2 )
 expand = true
@@ -64,32 +64,29 @@ stretch_mode = 5
 
 [node name="seal_1_label" type="Label" parent="seals"]
 margin_left = 72.0
-margin_top = 304.0
+margin_top = 272.0
 margin_right = 232.0
-margin_bottom = 432.0
+margin_bottom = 400.0
 rect_min_size = Vector2( 160, 128 )
 align = 1
-valign = 1
 autowrap = true
 
 [node name="seal_2_label" type="Label" parent="seals"]
 margin_left = 240.0
-margin_top = 304.0
+margin_top = 272.0
 margin_right = 400.0
-margin_bottom = 432.0
+margin_bottom = 400.0
 rect_min_size = Vector2( 160, 128 )
 align = 1
-valign = 1
 autowrap = true
 
 [node name="seal_3_label" type="Label" parent="seals"]
 margin_left = 408.0
-margin_top = 304.0
+margin_top = 272.0
 margin_right = 568.0
-margin_bottom = 432.0
+margin_bottom = 400.0
 rect_min_size = Vector2( 160, 128 )
 align = 1
-valign = 1
 autowrap = true
 
 [node name="title" type="Label" parent="."]

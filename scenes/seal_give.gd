@@ -12,9 +12,9 @@ onready var fade = $fade
 onready var mn = $mN
 onready var title_label = $title
 
-var seal__1_data: String
-var seal__2_data: String
-var seal__3_data: String
+var seal__1_data: String = ""
+var seal__2_data: String = ""
+var seal__3_data: String = ""
 var already_pressed: bool = false
 var title_label_defpos: Vector2 = Vector2.ZERO
 var seals_control_defpos: Vector2 = Vector2.ZERO
@@ -28,9 +28,15 @@ func _ready():
 	
 	randomize()
 	
-	seal__1_data = str(Global.seals.keys().pick_random())
-	seal__2_data = str(Global.seals.keys().pick_random())
-	seal__3_data = str(Global.seals.keys().pick_random())
+	for i in 3:
+		var keys: Array = Global.seals.keys()
+		keys.shuffle()
+		seal__1_data = str(keys[0])
+		seal__2_data = str(keys[1])
+		seal__3_data = str(keys[2])
+#	seal__1_data = str(Global.seals.keys().pick_random())
+#	seal__2_data = str(Global.seals.keys().pick_random())
+#	seal__3_data = str(Global.seals.keys().pick_random())
 	
 	seal__1.connect("pressed", self, "_on_pressed", [seal__1, seal__1__label])
 	seal__2.connect("pressed", self, "_on_pressed", [seal__2, seal__2__label])
@@ -45,6 +51,9 @@ func _ready():
 	seal__1__label.text = "[" + tr(str(Global.seals[seal__1_data]["name"])) + "]\n\n" + tr(str(Global.seals[seal__1_data]["desc"]))
 	seal__2__label.text = "[" + tr(str(Global.seals[seal__2_data]["name"])) + "]\n\n" + tr(str(Global.seals[seal__2_data]["desc"]))
 	seal__3__label.text = "[" + tr(str(Global.seals[seal__3_data]["name"])) + "]\n\n" + tr(str(Global.seals[seal__3_data]["desc"]))
+	seal__1.texture_normal = load(Global.seals[seal__1_data]["texture"])
+	seal__2.texture_normal = load(Global.seals[seal__2_data]["texture"])
+	seal__3.texture_normal = load(Global.seals[seal__3_data]["texture"])
 	
 	tween.interpolate_property(fade, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
@@ -90,6 +99,8 @@ func _on_pressed(seal_texturebutton: TextureButton, seal_label: Label):
 	tween.interpolate_property(seals_label[1], "modulate:a", 1.0, 0.0, 0.4)
 	tween.interpolate_property(seals[0], "rect_position:y", seals[0].rect_position.y, seals[0].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
 	tween.interpolate_property(seals[1], "rect_position:y", seals[1].rect_position.y, seals[1].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
+	tween.interpolate_property(seals_label[0], "rect_position:y", seals_label[0].rect_position.y, seals_label[0].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
+	tween.interpolate_property(seals_label[1], "rect_position:y", seals_label[1].rect_position.y, seals_label[1].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
 	tween.start()
 	go_to_next_scene("res://scenes/roadmap.tscn")
 

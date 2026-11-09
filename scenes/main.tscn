@@ -280,12 +280,32 @@ mouse_filter = 2
 
 [node name="fg" type="TextureRect" parent="CanvasLayer/pBottom"]
 modulate = Color( 1, 1, 1, 0.75 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 75.0
-margin_right = -94.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -179.5
+margin_top = -17.5
+margin_right = 179.5
+margin_bottom = 17.5
 texture = ExtResource( 2 )
 stretch_mode = 1
+
+[node name="colonybar" type="ProgressBar" parent="CanvasLayer/pBottom"]
+modulate = Color( 1, 1, 1, 0.15 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -145.5
+margin_top = -14.0
+margin_right = 145.5
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 4 )
+percent_visible = false
 
 [node name="hbox" type="HBoxContainer" parent="CanvasLayer/pBottom"]
 anchor_right = 1.0

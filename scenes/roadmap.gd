@@ -31,10 +31,10 @@ func _ready():
 	
 	if Global.landlords.size() >= Global.currentLandlordIndex + 1+1:
 		landlord__1.texture_normal = load(Global.landlords[Global.currentLandlordIndex + 1]["texture"])
-		landlord__1__label.text = str(Global.landlords[Global.currentLandlordIndex + 1]["name"]) + "\n\n" + str(Global.landlords[Global.currentLandlordIndex + 1]["desc"])
+		landlord__1__label.text = tr(str(Global.landlords[Global.currentLandlordIndex + 1]["name"])) + "\n\n" + tr(str(Global.landlords[Global.currentLandlordIndex + 1]["desc"]))
 	if Global.landlords.size() >= Global.currentLandlordIndex + 2+1:
 		landlord__2.texture_normal = load(Global.landlords[Global.currentLandlordIndex + 2]["texture"])
-		landlord__2__label.text = str(Global.landlords[Global.currentLandlordIndex + 2]["name"]) + "\n\n" + str(Global.landlords[Global.currentLandlordIndex + 2]["desc"])
+		landlord__2__label.text = tr(str(Global.landlords[Global.currentLandlordIndex + 2]["name"])) + "\n\n" + tr(str(Global.landlords[Global.currentLandlordIndex + 2]["desc"]))
 	else: landlord__2.hide()
 	
 	Global.health = 999
@@ -69,9 +69,9 @@ func go_to_next_scene(scenePath: String):
 	
 	fade.modulate.a = 0.0
 	fade.show()
-	tween.interpolate_property(fade, "modulate:a", 0.0, 1.0, 1.5)
+	tween.interpolate_property(fade, "modulate:a", 0.0, 1.0, 1.0)
 	tween.start()
 	
-	yield(get_tree().create_timer(2.0), "timeout")
+	yield(get_tree().create_timer(1.2), "timeout")
 	
 	get_tree().change_scene(scenePath)
