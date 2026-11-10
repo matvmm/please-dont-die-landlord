@@ -1,0 +1,115 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://sprites/other/check_ui_1.png" type="Texture" id=1]
+[ext_resource path="res://sprites/other/check_ui_0.png" type="Texture" id=2]
+
+[sub_resource type="Gradient" id=14]
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture2D" id=15]
+gradient = SubResource( 14 )
+width = 8
+height = 14
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxEmpty" id=17]
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[node name="settings" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 160.0
+margin_top = 96.0
+margin_right = -160.0
+alignment = 1
+
+[node name="musicSlider" type="HBoxContainer" parent="."]
+margin_top = 144.0
+margin_right = 320.0
+margin_bottom = 158.0
+
+[node name="Label" type="Label" parent="musicSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Музыка"
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="musicSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 17 )
+custom_styles/grabber_area = SubResource( 17 )
+min_value = -50.0
+max_value = 0.0
+value = -20.0
+
+[node name="soundSlider" type="HBoxContainer" parent="."]
+margin_top = 162.0
+margin_right = 320.0
+margin_bottom = 176.0
+
+[node name="Label" type="Label" parent="soundSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Звуки "
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="soundSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 18 )
+custom_styles/grabber_area = SubResource( 18 )
+min_value = -50.0
+max_value = 0.0
+value = -10.0
+
+[node name="fullscreenCheckBox" type="CheckBox" parent="."]
+margin_top = 180.0
+margin_right = 320.0
+margin_bottom = 198.0
+custom_icons/checked = ExtResource( 1 )
+custom_icons/unchecked = ExtResource( 2 )
+text = "Полноэкранный режим"
+
+[node name="moveByMouseCheckBox" type="CheckBox" parent="."]
+margin_top = 202.0
+margin_right = 320.0
+margin_bottom = 220.0
+custom_icons/checked = ExtResource( 1 )
+custom_icons/unchecked = ExtResource( 2 )
+pressed = true
+text = "Движение интерфейса от мыши"
+
+[node name="languageOptionBox" type="OptionButton" parent="."]
+margin_top = 224.0
+margin_right = 320.0
+margin_bottom = 239.0

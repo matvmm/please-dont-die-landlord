@@ -64,12 +64,7 @@ func _ready():
 	draw_pile = Global.deck.duplicate()
 	draw_pile.shuffle()
 	
-	mScreenMotion["bottom"] = bottom.rect_position
-	mScreenMotion["pBottom"] = p_bottom.rect_position
-	mScreenMotion["top"] = top.rect_position
-	mScreenMotion["right"] = right.rect_position
-	mScreenMotion["thought"] = thought_control.rect_position
-	mScreenMotion["landlord"] = landlord_texturerect.rect_position
+	reset_m_screen_motion()
 	
 	if Global.currentLandlordIndex < 3: Global.play_music("res://music/default_music_1.mp3")
 	else:                               Global.play_music("res://music/default_music_2.mp3")
@@ -98,6 +93,40 @@ func _ready():
 	
 	yield(get_tree().create_timer(1.0), "timeout")
 	fade.hide()
+
+func reset_m_screen_motion(fromSettings: bool = false):
+	var mSave: bool = Global.moveByMouse
+	Global.moveByMouse = false
+	
+	if fromSettings:
+		yield(get_tree(), "idle_frame")
+		
+		bottom.rect_position = mScreenMotion["bottom"]
+		p_bottom.rect_position = mScreenMotion["pBottom"]
+		top.rect_position = mScreenMotion["top"]
+		right.rect_position = mScreenMotion["right"]
+		thought_control.rect_position = mScreenMotion["thought"]
+		landlord_texturerect.rect_position = mScreenMotion["landlord"]
+	
+	get_tree().paused = false
+	yield(get_tree(), "idle_frame")
+	
+	mScreenMotion["bottom"] = bottom.rect_position
+	mScreenMotion["pBottom"] = p_bottom.rect_position
+	mScreenMotion["top"] = top.rect_position
+	mScreenMotion["right"] = right.rect_position
+	mScreenMotion["thought"] = thought_control.rect_position
+	mScreenMotion["landlord"] = landlord_texturerect.rect_position
+	
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	if fromSettings: get_tree().paused = true
+	
+	Global.moveByMouse = mSave
 
 func _run_default_animation():
 #	defaultanimation.repeat = true

@@ -338,6 +338,11 @@ var moveByMouse: bool = true
 var fullscreen: bool = false
 
 func _ready():
+	if OS.get_locale_language() in ["ru", "en"]:
+		TranslationServer.set_locale(OS.get_locale_language())
+	else:
+		TranslationServer.set_locale("en")
+	
 	musicPlayer = AudioStreamPlayer.new()
 	musicPlayer.pause_mode = Node.PAUSE_MODE_PROCESS
 	add_child(musicPlayer)

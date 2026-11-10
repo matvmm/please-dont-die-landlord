@@ -487,9 +487,9 @@ margin_right = -160.0
 alignment = 1
 
 [node name="musicSlider" type="HBoxContainer" parent="CanvasLayer/pause/settings"]
-margin_top = 154.0
+margin_top = 133.0
 margin_right = 320.0
-margin_bottom = 168.0
+margin_bottom = 147.0
 
 [node name="Label" type="Label" parent="CanvasLayer/pause/settings/musicSlider"]
 margin_right = 48.0
@@ -516,9 +516,9 @@ max_value = 0.0
 value = -20.0
 
 [node name="soundSlider" type="HBoxContainer" parent="CanvasLayer/pause/settings"]
-margin_top = 172.0
+margin_top = 151.0
 margin_right = 320.0
-margin_bottom = 186.0
+margin_bottom = 165.0
 
 [node name="Label" type="Label" parent="CanvasLayer/pause/settings/soundSlider"]
 margin_right = 48.0
@@ -544,22 +544,46 @@ min_value = -50.0
 max_value = 0.0
 value = -10.0
 
-[node name="fullscreenCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
-margin_top = 190.0
+[node name="languageOptionBox" type="OptionButton" parent="CanvasLayer/pause/settings"]
+margin_top = 169.0
 margin_right = 320.0
-margin_bottom = 208.0
+margin_bottom = 184.0
+text = "Выберите язык"
+
+[node name="fullscreenCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
+margin_top = 188.0
+margin_right = 320.0
+margin_bottom = 206.0
 custom_icons/checked = ExtResource( 16 )
 custom_icons/unchecked = ExtResource( 15 )
 text = "Полноэкранный режим"
 
-[node name="moveByMouseCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
-margin_top = 212.0
+[node name="expandWindowCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
+margin_top = 210.0
 margin_right = 320.0
-margin_bottom = 230.0
+margin_bottom = 228.0
+custom_icons/checked = ExtResource( 16 )
+custom_icons/unchecked = ExtResource( 15 )
+text = "Расширение рамок окна"
+
+[node name="moveByMouseCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
+margin_top = 232.0
+margin_right = 320.0
+margin_bottom = 250.0
 custom_icons/checked = ExtResource( 16 )
 custom_icons/unchecked = ExtResource( 15 )
 pressed = true
 text = "Движение интерфейса от мыши"
+
+[node name="warningLabel" type="Label" parent="CanvasLayer/pause/settings"]
+visible = false
+modulate = Color( 1, 1, 1, 0.3 )
+margin_top = 238.0
+margin_right = 320.0
+margin_bottom = 267.0
+text = "После всех изменений возможно понадобится загрузка новой сцены."
+align = 1
+autowrap = true
 
 [node name="ver" type="Label" parent="CanvasLayer/pause"]
 anchor_top = 1.0
