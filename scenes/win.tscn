@@ -4,7 +4,7 @@
 [ext_resource path="res://sprites/other/front_effect_1.png" type="Texture" id=2]
 [ext_resource path="res://sprites/other/front_effect_2.png" type="Texture" id=3]
 [ext_resource path="res://sprites/other/front_effect_3.png" type="Texture" id=4]
-[ext_resource path="res://win.gd" type="Script" id=5]
+[ext_resource path="res://scenes/win.gd" type="Script" id=5]
 
 [sub_resource type="AnimatedTexture" id=1]
 frames = 4
@@ -21,7 +21,7 @@ frame_3/delay_sec = 0.0
 script = ExtResource( 5 )
 
 [node name="bg" type="TextureRect" parent="."]
-modulate = Color( 1, 1, 1, 0.0196078 )
+modulate = Color( 1, 1, 1, 0.0784314 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 texture = SubResource( 1 )

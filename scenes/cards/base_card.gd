@@ -1,7 +1,7 @@
 # base_card.gd
 extends TextureButton
 
-onready var tween = $"../../Tween"
+onready var tween: Tween = $"../../Tween"
 onready var card_desc = $"../../../../card_desc"
 onready var landlord_sprite = $"../../../../bg/landlord"
 onready var seal_texturerect = $seal_texturerect
@@ -54,7 +54,8 @@ func _on_mouse_entered():
 	card_desc.rect_position.y = rect_global_position.y - card_desc.rect_size.y - 8
 	card_desc.show()
 	tween.interpolate_property(card_desc, "rect_position:x", card_desc.rect_position.x, 8 + rect_position.x - rect_size.x, 0.3, Tween.TRANS_CUBIC, Tween.EASE_OUT)
-	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE*1.1, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE*1.2, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.interpolate_property(self, "rect_rotation", rect_rotation, rand_range(-4, 4), 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 	
 	var text: String = tr(currentDefaultCard["name"])
@@ -69,6 +70,7 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	card_desc.hide()
 	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.interpolate_property(self, "rect_rotation", rect_rotation, 0, 0.1, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 
 func apply_animation():
@@ -84,6 +86,7 @@ func apply_animation():
 	tween.interpolate_property(self, "rect_scale", rect_scale, Vector2.ONE*2, 0.15)
 	tween.interpolate_property(self, "modulate:a", modulate.a, 0.0, 0.15)
 	tween.interpolate_property(self, "rect_rotation", rect_rotation, rect_rotation + 90.0, 0.15)
+	tween.interpolate_property(self, "rect_position", rect_position, rect_position + Vector2(rand_range(-128, 128), rand_range(-128, 128)), 0.25, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	
 	yield(get_tree().create_timer(0.15), "timeout")
 	

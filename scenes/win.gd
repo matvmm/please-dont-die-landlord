@@ -18,7 +18,7 @@ func _ready():
 		tr("Это ли не повод для гордости?")
 	)
 	
-	Global.play_audio("")
+	Global.play_music("")
 	Global.currentLandlordIndex = 0
 	Global.health = 100
 	Global.headColony = 0
@@ -43,6 +43,8 @@ func _ready():
 	get_tree().change_scene("res://scenes/intro.tscn")
 
 func _process(delta):
+	if !Global.moveByMouse: return
+	
 	var m: Vector2 = mn.get_global_mouse_position()
 	label.rect_position = lerp(label.rect_position, label_defpos + m * 0.02, 15 * delta)
 

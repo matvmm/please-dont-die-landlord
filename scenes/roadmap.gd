@@ -46,12 +46,14 @@ func _ready():
 	yield(get_tree().create_timer(1.0), "timeout")
 	fade.hide()
 	
-	tween.interpolate_property(cont, "rect_position:x", cont.rect_position.x, -220.0, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+	tween.interpolate_property(cont, "rect_position:x", cont.rect_position.x, -320.0, 1.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 	tween.start()
 	yield(get_tree().create_timer(1.5), "timeout")
 	cont_defpos = cont.rect_position
 
 func _process(delta):
+	if !Global.moveByMouse: return
+	
 	var m: Vector2 = mn.get_global_mouse_position()
 	title_label.rect_position = lerp(title_label.rect_position, title_label_defpos + m * 0.02, 15 * delta)
 	cont.rect_position = lerp(cont.rect_position, cont_defpos + m * 0.01, 15 * delta)

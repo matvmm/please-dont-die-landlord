@@ -66,7 +66,7 @@ func _process(delta):
 	seals_control.rect_position = lerp(seals_control.rect_position, seals_control_defpos + m * 0.01, 15 * delta)
 
 func _on_mouse_entered(seal_texturebutton: TextureButton):
-	tween.interpolate_property(seal_texturebutton, "rect_scale", seal_texturebutton.rect_scale, Vector2.ONE*1.2, 0.2, Tween.TRANS_BACK, Tween.EASE_OUT)
+	tween.interpolate_property(seal_texturebutton, "rect_scale", seal_texturebutton.rect_scale, Vector2.ONE*1.5, 0.3, Tween.TRANS_BACK, Tween.EASE_OUT)
 	tween.start()
 
 func _on_mouse_exited(seal_texturebutton: TextureButton):

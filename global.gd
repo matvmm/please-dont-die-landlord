@@ -1,6 +1,9 @@
 # global.gd
 extends Node
 
+var ver: String = "ver1t1"
+
+
 var turns: int = 0
 var health: int = 100
 var maxCards: int = 0
@@ -86,7 +89,7 @@ var landlords: Array = [
 		"name": "Мышь", "desc": "Крошечная и шустрая.",
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
-		"health": 11, "need": 12,
+		"health": 11, "need": 14,
 		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
@@ -327,31 +330,50 @@ var activities: Dictionary = {
 	},
 }
 
-onready var audioPlayer: AudioStreamPlayer
+onready var musicPlayer: AudioStreamPlayer
+
+var musicVolume: float = -20.0   # db
+var soundVolume: float = -10.0   # db
+var moveByMouse: bool = true
+var fullscreen: bool = false
 
 func _ready():
-	return
+	musicPlayer = AudioStreamPlayer.new()
+	musicPlayer.pause_mode = Node.PAUSE_MODE_PROCESS
+	add_child(musicPlayer)
 	
-	audioPlayer = AudioStreamPlayer.new()
-	add_child(audioPlayer)
-	
-	audioPlayer.stream = load("res://music/default_music_1.mp3")
-	audioPlayer.stream.loop = true
-	audioPlayer.volume_db = -20.0
-	
-	audioPlayer.play()
+	play_music("res://music/default_music_1.mp3")
 
-func play_audio(newStream: String):
-	return
+func toggle_fullscreen(toggle: bool):
+	fullscreen = toggle
+	OS.window_fullscreen = fullscreen
+
+func update_music_volume(volume: float):
+	if volume <= -50:
+		musicVolume = -99999.0
+	else:
+		musicVolume = volume
 	
-	if audioPlayer.stream:
-		if audioPlayer.stream.resource_path == newStream:
+	musicPlayer.volume_db = musicVolume
+
+func update_sound_volume(volume: float):
+	if volume <= -50:
+		soundVolume = -99999.0
+	else:
+		soundVolume = volume
+
+func play_music(newStream: String):
+	musicPlayer.volume_db = musicVolume
+	
+	if musicPlayer.stream:
+		if musicPlayer.stream.resource_path == newStream:
 			return
 	
-	audioPlayer.stop()
+	musicPlayer.stop()
 	if newStream == "":
-		audioPlayer.stream = null
+		musicPlayer.stream = null
 		return
 	
-	audioPlayer.stream = load(newStream)
-	audioPlayer.play()
+	musicPlayer.stream = load(newStream)
+	musicPlayer.stream.loop = true
+	musicPlayer.play()

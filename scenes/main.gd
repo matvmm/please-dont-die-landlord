@@ -21,6 +21,7 @@ onready var bg = $CanvasLayer/bg/bg
 onready var landlord_texturerect = $CanvasLayer/bg/landlord
 onready var fade = $CanvasLayer/fade
 onready var defaultanimation = $defaultanimation
+onready var defaultanimation2 = $defaultanimation2
 onready var thought_texturerect = $CanvasLayer/thought/TextureRect
 onready var thought_label = $CanvasLayer/thought/Label
 onready var shading = $CanvasLayer/shading
@@ -36,6 +37,7 @@ var currentLandlord: Dictionary
 var thought: Dictionary
 var round_over: bool = false
 var thought_muted: bool = false
+var defaultanimdtionTime: float = 0.8
 var mScreenMotion: Dictionary = {
 	"top": Vector2.ZERO,
 	"right": Vector2.ZERO,
@@ -69,8 +71,8 @@ func _ready():
 	mScreenMotion["thought"] = thought_control.rect_position
 	mScreenMotion["landlord"] = landlord_texturerect.rect_position
 	
-	if Global.currentLandlordIndex < 3: Global.play_audio("res://music/default_music_1.mp3")
-	else:                               Global.play_audio("res://music/default_music_2.mp3")
+	if Global.currentLandlordIndex < 3: Global.play_music("res://music/default_music_1.mp3")
+	else:                               Global.play_music("res://music/default_music_2.mp3")
 	
 #	match Global.currentLandlordIndex:
 #		0,1,2: Global.maxCards = 5
@@ -98,12 +100,18 @@ func _ready():
 	fade.hide()
 
 func _run_default_animation():
-	defaultanimation.repeat = true
-	defaultanimation.interpolate_property(landlord_texturerect, "rect_scale:x", 1.0, -1.0, 0.8, Tween.TRANS_BACK, Tween.EASE_OUT, 7.5)
-	defaultanimation.interpolate_property(landlord_texturerect, "rect_scale:x", -1.0, 1.0, 0.8, Tween.TRANS_BACK, Tween.EASE_OUT, 15.0)
-	defaultanimation.start()
+#	defaultanimation.repeat = true
+#	defaultanimation.interpolate_property(landlord_texturerect, "rect_scale:x", 1.0, -1.0, 0.8, Tween.TRANS_BACK, Tween.EASE_OUT, 7.5)
+#	defaultanimation.interpolate_property(landlord_texturerect, "rect_scale:x", -1.0, 1.0, 0.8, Tween.TRANS_BACK, Tween.EASE_OUT, 15.0)
+#	defaultanimation.start()
+	defaultanimation2.repeat = true
+	defaultanimation2.interpolate_property(landlord_texturerect, "rect_scale", Vector2(1.0, 0.95), Vector2(0.95, 1.0), defaultanimdtionTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT)
+	defaultanimation2.interpolate_property(landlord_texturerect, "rect_scale", Vector2(0.95, 1.0), Vector2(1.0, 0.95), defaultanimdtionTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT, defaultanimdtionTime)
+	defaultanimation2.start()
 
 func _process(delta):
+	if !Global.moveByMouse: return
+	
 	var m: Vector2 = get_global_mouse_position()
 	var mSM: Dictionary = mScreenMotion
 	var s1: float = 0.04
@@ -329,12 +337,16 @@ func update_label(prev_colony: int = -1):
 		return
 	
 	if Global.health <= 0 || (colony <= 0 && Global.currentLandlordIndex != 0):
+		if Global.health <= 0:
+			defaultanimdtionTime = 0.0; _run_default_animation()
+			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
 		go_to_next_scene("res://scenes/gameover.tscn")
 		round_over = true
 		return
 	if is_scared():
 		landlord_texturerect.texture = load(currentLandlord["lowhealth_texture"])
 		shake(landlord_texturerect, 1.0, 9999999)
+		defaultanimdtionTime = 1.5; _run_default_animation()
 	else:
 		landlord_texturerect.texture = load(currentLandlord["texture"])
 		shake(landlord_texturerect, 0.0, 0, true)
@@ -415,6 +427,7 @@ func make_thought(name: String, zone: String) -> Dictionary:
 func plan_thought():
 	thought = make_thought(pick_activity(), get_danger_zone())
 	
+	if is_scared(): shake(thought_control, 2.0, 36.0)
 	tween.interpolate_property(thought_label, "modulate:a", 1.0, 0.0, 0.3)
 	tween.interpolate_property(thought_texturerect, "modulate:a", 1.0, 0.5, 0.3)
 	tween.start()

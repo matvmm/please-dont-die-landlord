@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://sprites/other/fg2.png" type="Texture" id=2]
@@ -14,6 +14,9 @@
 [ext_resource path="res://scenes/guide.gd" type="Script" id=12]
 [ext_resource path="res://scenes/pause.gd" type="Script" id=13]
 [ext_resource path="res://themes/Classic-Console-Neue-Regular.ttf" type="DynamicFontData" id=14]
+[ext_resource path="res://sprites/other/check_ui_0.png" type="Texture" id=15]
+[ext_resource path="res://sprites/other/check_ui_1.png" type="Texture" id=16]
+[ext_resource path="res://sprites/other/pause_button_1.png" type="Texture" id=17]
 
 [sub_resource type="AnimatedTexture" id=2]
 frames = 4
@@ -72,6 +75,29 @@ size = 32
 outline_size = 1
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 14 )
+
+[sub_resource type="Gradient" id=14]
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture2D" id=15]
+gradient = SubResource( 14 )
+width = 8
+height = 14
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxEmpty" id=17]
+
+[sub_resource type="StyleBoxEmpty" id=18]
 
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
@@ -455,8 +481,108 @@ valign = 2
 [node name="settings" type="VBoxContainer" parent="CanvasLayer/pause"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 160.0
 margin_top = 96.0
+margin_right = -160.0
+alignment = 1
+
+[node name="musicSlider" type="HBoxContainer" parent="CanvasLayer/pause/settings"]
+margin_top = 154.0
+margin_right = 320.0
+margin_bottom = 168.0
+
+[node name="Label" type="Label" parent="CanvasLayer/pause/settings/musicSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Музыка"
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer/pause/settings/musicSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 17 )
+custom_styles/grabber_area = SubResource( 17 )
+min_value = -50.0
+max_value = 0.0
+value = -20.0
+
+[node name="soundSlider" type="HBoxContainer" parent="CanvasLayer/pause/settings"]
+margin_top = 172.0
+margin_right = 320.0
+margin_bottom = 186.0
+
+[node name="Label" type="Label" parent="CanvasLayer/pause/settings/soundSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Звуки "
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer/pause/settings/soundSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 18 )
+custom_styles/grabber_area = SubResource( 18 )
+min_value = -50.0
+max_value = 0.0
+value = -10.0
+
+[node name="fullscreenCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
+margin_top = 190.0
+margin_right = 320.0
+margin_bottom = 208.0
+custom_icons/checked = ExtResource( 16 )
+custom_icons/unchecked = ExtResource( 15 )
+text = "Полноэкранный режим"
+
+[node name="moveByMouseCheckBox" type="CheckBox" parent="CanvasLayer/pause/settings"]
+margin_top = 212.0
+margin_right = 320.0
+margin_bottom = 230.0
+custom_icons/checked = ExtResource( 16 )
+custom_icons/unchecked = ExtResource( 15 )
+pressed = true
+text = "Движение интерфейса от мыши"
+
+[node name="ver" type="Label" parent="CanvasLayer/pause"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = -16.0
+margin_right = 63.0
+margin_bottom = -3.0
+valign = 2
+
+[node name="pauseButton" type="Button" parent="CanvasLayer"]
+pause_mode = 2
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -28.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = 28.0
+icon = ExtResource( 17 )
+icon_align = 1
 
 [node name="Tween" type="Tween" parent="."]
 
 [node name="defaultanimation" type="Tween" parent="."]
+
+[node name="defaultanimation2" type="Tween" parent="."]
