@@ -91,3 +91,10 @@ func apply_animation():
 	yield(get_tree().create_timer(0.15), "timeout")
 	
 	queue_free()
+
+func remove():
+	tween.interpolate_property(self, "modulate:a", modulate.a, 0.0, 0.3)
+	tween.interpolate_property(self, "rect_scale", rect_scale, rect_scale*1.2, 0.3, Tween.TRANS_CUBIC, Tween.EASE_IN)
+	tween.start()
+	yield(get_tree().create_timer(0.31), "timeout")
+	queue_free()

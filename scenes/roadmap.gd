@@ -15,6 +15,7 @@ onready var tween = $Tween
 
 var title_label_defpos: Vector2 = Vector2.ZERO
 var cont_defpos: Vector2 = Vector2.ZERO
+var already_selected: bool = false
 
 
 func _ready():
@@ -59,10 +60,16 @@ func _process(delta):
 	cont.rect_position = lerp(cont.rect_position, cont_defpos + m * 0.01, 15 * delta)
 
 func _on_landlord__1_pressed():
+	if already_selected: return
+	already_selected = true
+	
 	Global.currentLandlordIndex += 1
 	go_to_next_scene("res://scenes/main.tscn")
 
 func _on_landlord__2_pressed():
+	if already_selected: return
+	already_selected = true
+	
 	Global.currentLandlordIndex += 2
 	go_to_next_scene("res://scenes/main.tscn")
 

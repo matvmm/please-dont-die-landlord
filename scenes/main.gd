@@ -29,6 +29,9 @@ onready var thought_control = $CanvasLayer/thought
 onready var p_bottom = $CanvasLayer/pBottom
 onready var colonyadd_label = $CanvasLayer/pBottom/colonyadd
 onready var colonybar = $CanvasLayer/pBottom/colonybar
+onready var status_control = $CanvasLayer/status
+onready var label_status = $CanvasLayer/status/Label
+onready var rain_event_particles = $CanvasLayer/bg/rain_event
 
 var draw_pile: Array = []
 var discard_pile: Array = []
@@ -37,7 +40,8 @@ var currentLandlord: Dictionary
 var thought: Dictionary
 var round_over: bool = false
 var thought_muted: bool = false
-var defaultanimdtionTime: float = 0.8
+var replace_hand: bool = false
+var defaultanimdtionTime: float = 1.0
 var mScreenMotion: Dictionary = {
 	"top": Vector2.ZERO,
 	"right": Vector2.ZERO,
@@ -55,7 +59,8 @@ func _ready():
 	right.hide()
 	fade.modulate.a = 1.0
 	fade.show()
-	currentLandlord = Global.landlords[Global.currentLandlordIndex]
+#	currentLandlord = Global.landlords[Global.currentLandlordIndex]
+	currentLandlord = build_landlord(Global.landlords[Global.currentLandlordIndex])
 	landlord_texturerect.texture = load(currentLandlord["texture"])
 	healthbar.max_value = currentLandlord["health"]
 	colonybar.max_value = currentLandlord["need"]
@@ -63,6 +68,7 @@ func _ready():
 	if Global.deck.empty(): Global.reset_deck()
 	draw_pile = Global.deck.duplicate()
 	draw_pile.shuffle()
+	trigger_random_event()
 	
 	reset_m_screen_motion()
 	
@@ -74,7 +80,7 @@ func _ready():
 #		3,4  : Global.maxCards = 7
 #	Global.maxCards = 2 + Global.currentLandlordIndex * 1.5
 #	Global.maxCards = Global.currentLandlordIndex % 3 + 2
-	Global.maxCards = 4 + 2 * int(Global.currentLandlordIndex / 3)
+	Global.maxCards = clamp(4 + 2 * int(Global.currentLandlordIndex / 3), 4, 7)
 	
 	endturn_button.connect("pressed", self, "_on_endturn_button_pressed")
 	head_button.connect("pressed", self, "_on_head_button_pressed")
@@ -191,14 +197,21 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	
 	### считаем бонус при верном попадании паразита, или наоборот вычет из колонии, если он не прижился.
 	thought_muted = false
+	replace_hand = false
 	var gains := {1: 0, 2: 0, 3: 0}
 	for card in played:
 		apply_card(card, attack, played, gains)
-		if card.card_data["seal"] == "clingy" and card.currentDefaultCard["bestPlace"] == attack:
+		if card.card_data["seal"] == "clingy" && card.currentDefaultCard["bestPlace"] == attack:
 			draw_pile.append(card.card_data)
 		else:
 			discard_pile.append(card.card_data)
 		card.apply_animation()
+	if replace_hand:
+		for i in cards.get_children():
+			if !i.active:
+				discard_pile.append(i)
+				i.remove()
+	
 	yield(get_tree().create_timer(0.6), "timeout")
 	
 	Global.turns += 1
@@ -206,15 +219,18 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	var prev_colony: int = Global.headColony+Global.bodyColony+Global.legsColony
 	### если колония в одной из частей тела начата, то она продолжает размножаться автономно
 	randomize()
-	if Global.headColony > 0: Global.headColony += (1 + randi() % 2) * int(Global.headColony / 16)
-	if Global.bodyColony > 0: Global.bodyColony += (1 + randi() % 2) * int(Global.bodyColony / 10)
-	if Global.legsColony > 0: Global.legsColony += (randi() % 3) * int(Global.legsColony / 16)
+	if Global.headColony > 0: Global.headColony += int(ceil(Global.headColony / 6.0))
+	if Global.bodyColony > 0: Global.bodyColony += int(ceil(Global.bodyColony / 9.0))
+	if Global.legsColony > 0: Global.legsColony += int(ceil(Global.legsColony / 11.0))
 	
 	### применяем бонус
-	match attack:
-		1: Global.headColony += gains[1]
-		2: Global.bodyColony += gains[2]
-		3: Global.legsColony += gains[3]
+#	match attack:
+#		1: Global.headColony += gains[1]
+#		2: Global.bodyColony += gains[2]
+#		3: Global.legsColony += gains[3]
+	Global.headColony += gains[1]
+	Global.bodyColony += gains[2]
+	Global.legsColony += gains[3]
 	
 	### не даём колонии уйти в минус
 	Global.headColony = max(Global.headColony, 0)
@@ -222,9 +238,9 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	Global.legsColony = max(Global.legsColony, 0)
 	
 	### вычитаем здоровье
-	Global.health -= int(Global.headColony / 2)
-	Global.health -= int(Global.bodyColony / 3)
-	Global.health -= 1
+	Global.health -= int(ceil(Global.headColony / 2.0))
+	Global.health -= int(ceil(Global.bodyColony / 3.0))
+	Global.health -= int(ceil(Global.legsColony / 3.5))
 	Global.health = max(Global.health, 0)
 	
 	### применяем действия из текущей мысли и планируем новую
@@ -271,10 +287,48 @@ func give_cards(amount: int):
 
 func base_amount(zone: int) -> int:
 	match zone:
-		1: return 6 + randi() % 4
-		2: return 4 + randi() % 3
-	
+		1: return 1 + randi() % 2
+		2: return 1 + randi() % 2
 	return 1 + randi() % 2
+
+func show_status(sText: String, duration: int = 6.0):
+	label_status.text = sText
+	status_control.show()
+	tween.interpolate_property(status_control, "modulate:a", 0.0, 1.0, 1.0, Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.start()
+	
+	yield(get_tree().create_timer(duration - 1.0), "timeout")
+	
+	tween.interpolate_property(status_control, "modulate:a", 1.0, 0.0, 2.0)
+	tween.start()
+	
+	yield(get_tree().create_timer(2.1), "timeout")
+	
+	status_control.hide()
+
+func trigger_random_event():
+	randomize()
+	if randf() > 0.35: return # 35%
+	
+	var event_type = randi() % 2
+	match event_type:
+		0:  # дождь
+			rain_event_particles.emitting = true
+			rain_event_particles.show()
+			currentLandlord["activities"]["event_rain_weather"] = 10
+			currentLandlord["activities"].erase("jog")
+			currentLandlord["activities"].erase("hide")
+			show_status("На улице начался дождь. Хозяин раздражен.", 3.5)
+		1:  # сильный ливень
+			rain_event_particles.emitting = true
+			rain_event_particles.amount *= 8.0
+			rain_event_particles.speed_scale *= 1.25
+			rain_event_particles.texture.height *= 2.0
+			rain_event_particles.show()
+			currentLandlord["activities"]["event_rain_weather"] = 10
+			currentLandlord["activities"].erase("jog")
+			currentLandlord["activities"].erase("hide")
+			show_status("На улице начался сильный ливень. Хозяин раздражен.", 3.5)
 
 
 
@@ -295,32 +349,36 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 		gains[attack] += amount
 		match seal:
 			"greedy":
-				gains[attack] += 3
+				gains[attack] += int(ceil(amount / 2.0))
 			"scavenger":
 				if is_scared():
-					gains[attack] += 6
+					gains[attack] += amount
 			"sleepy":
 				thought_muted = true
 			"pack":
 				for other in played:
 					if other != card && other.currentDefaultCard["bestPlace"] == attack:
-						gains[attack] += 3
+						gains[attack] += int(ceil(amount / 2.0))
 			"megacool":
 				gains[attack] = currentLandlord["need"]
 			"randomity":
 				randomize()
 				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 2))
+			"replacement":
+				replace_hand = true
 	else:
 		match seal:
 			"exile":
 				gains[best] += int(amount / 2)
 			"greedy":
-				gains[attack] -= amount + 6
+				gains[attack] -= amount * 2
 			"megacool":
 				gains[attack] = currentLandlord["need"]
 			"randomity":
 				randomize()
 				gains[attack] += int(rand_range(-currentLandlord["need"] / 4, currentLandlord["need"] / 4))
+			"replacement":
+				replace_hand = true
 			_:
 				gains[attack] -= amount
 
@@ -347,7 +405,7 @@ func update_label(prev_colony: int = -1):
 		tween.interpolate_property(colonyadd_label, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
 #	healthbar.value = Global.health
-	healthbar_label.text = " " + tr("Здоровье") + ": " + str(Global.health) + "%"
+	healthbar_label.text = " " + tr("Здоровье") + ": " + str(Global.health) + " / " + str(currentLandlord["health"]) + " %"
 	head_colony_label.text = tr("Голова") + ": " + str(Global.headColony) + " "
 	body_colony_label.text = tr("Тело") + ": " + str(Global.bodyColony) + " "
 	legs_colony_label.text = tr("Ноги") + ": " + str(Global.legsColony) + " "
@@ -357,7 +415,26 @@ func update_label(prev_colony: int = -1):
 #	shading.texture.fill_to = Vector2(2.5, 0) if !is_scared() else Vector2(1.5, 0)
 	
 	if colony >= currentLandlord["need"]:
+		round_over = true
 		Global.parasitedLandlords += 1
+		
+		if Global.health <= 0:
+			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
+			defaultanimation2.stop_all()
+			
+			var prevColony: int = colony
+			
+			var loss_mult: float = rand_range(0.5, 0.75)
+			Global.headColony = int(Global.headColony * loss_mult)
+			Global.bodyColony = int(Global.bodyColony * loss_mult)
+			Global.legsColony = int(Global.legsColony * loss_mult)
+			
+			var targetColony: int = Global.headColony+Global.bodyColony+Global.legsColony
+			var addText: String = "[" + str(prevColony) + " - " + str(prevColony - targetColony) + " = " + str(targetColony) + "]"
+			# [11/11/2026] господи как же я заебался это писать, 5 час идёт сидения за этим ебаный, обоссанным кодом. это ощущается словно меня в жопу ебут. быстрее бы это закончилось.
+			
+			yield(show_status("Хозяин умер, но вы успели развить колонию. Из-за этого часть вашей колонии вымерла!" + "\n" + addText, 5.0), "completed")
+		
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
 			go_to_next_scene("res://scenes/win.tscn")
 			return
@@ -365,9 +442,9 @@ func update_label(prev_colony: int = -1):
 		round_over = true
 		return
 	
-	if Global.health <= 0 || (colony <= 0 && Global.currentLandlordIndex != 0):
+	if Global.health <= 0 || (colony <= (currentLandlord["need"] * 0.2) && Global.currentLandlordIndex != 0):
 		if Global.health <= 0:
-			defaultanimdtionTime = 0.0; _run_default_animation()
+			defaultanimation2.stop_all()
 			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
 		go_to_next_scene("res://scenes/gameover.tscn")
 		round_over = true
@@ -375,7 +452,7 @@ func update_label(prev_colony: int = -1):
 	if is_scared():
 		landlord_texturerect.texture = load(currentLandlord["lowhealth_texture"])
 		shake(landlord_texturerect, 1.0, 9999999)
-		defaultanimdtionTime = 1.5; _run_default_animation()
+		defaultanimdtionTime = 1.8; _run_default_animation()
 	else:
 		landlord_texturerect.texture = load(currentLandlord["texture"])
 		shake(landlord_texturerect, 0.0, 0, true)
@@ -470,8 +547,8 @@ func plan_thought():
 
 func apply_thought():
 	var effect: Dictionary = thought["effect"]
-	Global.health += effect.get("health", 0)
-	change_colony(effect.get("colony", 0), thought["zone"])
+	Global.health += scaled(effect.get("health", 0), currentLandlord["health"])
+	change_colony(scaled(effect.get("colony", 0), currentLandlord["need"]), thought["zone"])
 
 func biggest_zone() -> String:
 	var zones = {"head": Global.headColony, "body": Global.bodyColony, "legs": Global.legsColony}
@@ -502,8 +579,8 @@ func zone_label(zone: String):
 
 func describe_effect(effect: Dictionary, zone: String) -> String:
 	var parts: Array = []
-	var health: int = effect.get("health", 0)
-	var colony: int = effect.get("colony", 0)
+	var health: int = scaled(effect.get("health", 0), currentLandlord["health"])
+	var colony: int = scaled(effect.get("colony", 0), currentLandlord["need"])
 	if health != 0:
 		parts.append(tr("Здоровье") + " %+d%%" % health)
 	if colony != 0:
@@ -511,3 +588,23 @@ func describe_effect(effect: Dictionary, zone: String) -> String:
 	if parts.empty():
 		return "[" + tr("Без эффекта") + "]"
 	return "[" + PoolStringArray(parts).join(", ") + "]"
+
+func build_landlord(base: Dictionary) -> Dictionary:
+	var l: Dictionary = base.duplicate()
+	if !l.has("need_mod"): return l
+	var depth: int = Global.currentLandlordIndex
+	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
+	
+	var need: int = int(round(((9 + 4 * depth) + colony) * l["need_mod"]))
+	l["need"] = need
+	l["health"] = int(round(need * 1.2 * l.get("health_mod", 1.0)))
+	
+	return l
+
+func scaled(value: int, base: int) -> int:
+	if value == 0: return 0
+	
+	var v: int = int(round(value * base / 60.0))
+	if v == 0: v = int(sign(value))
+	
+	return v

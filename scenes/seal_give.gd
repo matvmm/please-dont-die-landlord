@@ -83,10 +83,15 @@ func _on_pressed(seal_texturebutton: TextureButton, seal_label: Label):
 		seal__2: applySeal = seal__2_data
 		seal__3: applySeal = seal__3_data
 	
-	for card in Global.deck:
+	var deckCopy: Array = Global.deck.duplicate()
+	deckCopy.shuffle()
+	
+	for card in deckCopy:
 		if card["seal"] == "":
 			card["seal"] = applySeal
 			break
+	
+	Global.deck = deckCopy
 	
 	var seals: Array = [seal__1, seal__2, seal__3]
 	for i in seals: if i == seal_texturebutton: seals.remove(seals.find(seal_texturebutton))

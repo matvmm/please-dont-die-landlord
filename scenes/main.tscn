@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://sprites/other/fg2.png" type="Texture" id=2]
@@ -60,6 +60,15 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0, 0, 0, 1 )
 
+[sub_resource type="Gradient" id=19]
+offsets = PoolRealArray( 0, 0.75, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 0.9, 0, 0, 0, 0 )
+
+[sub_resource type="GradientTexture2D" id=20]
+gradient = SubResource( 19 )
+fill_from = Vector2( 0, 1 )
+fill_to = Vector2( 0, 0 )
+
 [sub_resource type="Gradient" id=8]
 interpolation_mode = 2
 colors = PoolColorArray( 0, 0, 0, 0, 0, 0, 0, 1 )
@@ -119,7 +128,7 @@ stretch_mode = 2
 visible = false
 position = Vector2( 312, 0 )
 emitting = false
-amount = 24
+amount = 16
 lifetime = 1.2
 preprocess = 1.2
 speed_scale = 2.0
@@ -389,6 +398,7 @@ Nothing do."
 fit_content_height = true
 
 [node name="guidebutton" type="TextureButton" parent="CanvasLayer"]
+visible = false
 modulate = Color( 1, 1, 1, 0.25 )
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -397,6 +407,32 @@ margin_top = -151.0
 margin_right = 40.0
 margin_bottom = -119.0
 texture_normal = ExtResource( 10 )
+
+[node name="status" type="Control" parent="CanvasLayer"]
+visible = false
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -117.0
+mouse_filter = 2
+
+[node name="bg" type="TextureRect" parent="CanvasLayer/status"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource( 20 )
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/status"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 163.0
+margin_top = 8.0
+margin_right = -165.0
+margin_bottom = -7.0
+align = 1
+valign = 1
+autowrap = true
 
 [node name="guide" type="Control" parent="CanvasLayer"]
 visible = false
@@ -444,6 +480,7 @@ text = "Далее ->"
 icon_align = 1
 
 [node name="shading" type="TextureRect" parent="CanvasLayer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2

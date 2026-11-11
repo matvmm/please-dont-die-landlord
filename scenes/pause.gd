@@ -18,6 +18,7 @@ func _ready():
 	language_option_box.add_item("Russian")
 	language_option_box.add_item("English")
 	language_option_box.selected = 0 if TranslationServer.get_locale() == "ru" else 1
+	expand_window_check_box.pressed = Global.expandWindow
 	
 	pause_button.connect("pressed", self, "_on_pause_button_pressed")
 	music_slider.connect("value_changed", self, "_on_slider_changed", [false])
@@ -26,6 +27,8 @@ func _ready():
 	expand_window_check_box.connect("pressed", self, "_on_expand_window_check_box_pressed")
 	fullscreen_check_box.connect("pressed", self, "_on_fullscreen_check_box_pressed")
 	language_option_box.connect("item_selected", self, "_on_language_option_box_item_selected")
+	
+	Global.update_music_volume(-50.0)
 
 func _on_pause_button_pressed():
 	visible = not visible
@@ -62,5 +65,6 @@ func _on_expand_window_check_box_pressed():
 		Vector2(640.0, 480.0)
 	)
 	
+	Global.expandWindow = expand_window_check_box.pressed
 	main.reset_m_screen_motion(true)
 	warning_label.show()
