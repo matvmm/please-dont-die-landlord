@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/card_creating1.mp3-4636608939a59aa63cc45582173c9579.mp3str"
+
+[deps]
+
+source_file="res://sounds/card_creating1.mp3"
+dest_files=[ "res://.import/card_creating1.mp3-4636608939a59aa63cc45582173c9579.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

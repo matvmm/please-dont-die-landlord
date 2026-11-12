@@ -11,6 +11,7 @@ onready var seal__3__label = $seals/seal_3_label
 onready var fade = $fade
 onready var mn = $mN
 onready var title_label = $title
+onready var sound_player = $soundPlayer
 
 var seal__1_data: String = ""
 var seal__2_data: String = ""
@@ -97,6 +98,9 @@ func _on_pressed(seal_texturebutton: TextureButton, seal_label: Label):
 	for i in seals: if i == seal_texturebutton: seals.remove(seals.find(seal_texturebutton))
 	var seals_label: Array = [seal__1__label, seal__2__label, seal__3__label]
 	for i in seals_label: if i == seal_label: seals_label.remove(seals_label.find(seal_label))
+	
+	sound_player.volume_db = Global.soundVolume
+	sound_player.stream.audio_stream = load("res://sounds/seal1.mp3"); sound_player.play()
 	
 	tween.interpolate_property(seals[0], "modulate:a", 1.0, 0.0, 0.4)
 	tween.interpolate_property(seals[1], "modulate:a", 1.0, 0.0, 0.4)

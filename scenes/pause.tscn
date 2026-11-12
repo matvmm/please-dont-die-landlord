@@ -1,0 +1,172 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://themes/Classic-Console-Neue-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scenes/pause.gd" type="Script" id=2]
+[ext_resource path="res://sprites/other/check_ui_1.png" type="Texture" id=3]
+[ext_resource path="res://sprites/other/check_ui_0.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFont" id=13]
+size = 32
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 1 )
+
+[sub_resource type="Gradient" id=14]
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture2D" id=15]
+gradient = SubResource( 14 )
+width = 8
+height = 14
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxEmpty" id=17]
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[node name="pause" type="Control"]
+pause_mode = 2
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="bg" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.9 )
+
+[node name="Label" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = -416.0
+rect_min_size = Vector2( 0, 64 )
+custom_fonts/font = SubResource( 13 )
+text = "ИГРА ПРИОСТАНОВЛЕНА"
+align = 1
+valign = 2
+
+[node name="settings" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 160.0
+margin_top = 96.0
+margin_right = -160.0
+alignment = 1
+
+[node name="musicSlider" type="HBoxContainer" parent="settings"]
+margin_top = 133.0
+margin_right = 320.0
+margin_bottom = 147.0
+
+[node name="Label" type="Label" parent="settings/musicSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Музыка"
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="settings/musicSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 17 )
+custom_styles/grabber_area = SubResource( 17 )
+min_value = -50.0
+max_value = 0.0
+value = -20.0
+
+[node name="soundSlider" type="HBoxContainer" parent="settings"]
+margin_top = 151.0
+margin_right = 320.0
+margin_bottom = 165.0
+
+[node name="Label" type="Label" parent="settings/soundSlider"]
+margin_right = 48.0
+margin_bottom = 13.0
+text = "Звуки "
+valign = 1
+
+[node name="HSlider" type="HSlider" parent="settings/soundSlider"]
+pause_mode = 2
+margin_left = 52.0
+margin_right = 320.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 0, 12 )
+size_flags_horizontal = 3
+custom_icons/tick = SubResource( 15 )
+custom_icons/grabber_disabled = SubResource( 15 )
+custom_icons/grabber_highlight = SubResource( 15 )
+custom_icons/grabber = SubResource( 15 )
+custom_styles/slider = SubResource( 16 )
+custom_styles/grabber_area_highlight = SubResource( 18 )
+custom_styles/grabber_area = SubResource( 18 )
+min_value = -50.0
+max_value = 0.0
+value = -10.0
+
+[node name="languageOptionBox" type="OptionButton" parent="settings"]
+margin_top = 169.0
+margin_right = 320.0
+margin_bottom = 184.0
+
+[node name="fullscreenCheckBox" type="CheckBox" parent="settings"]
+margin_top = 188.0
+margin_right = 320.0
+margin_bottom = 206.0
+custom_icons/checked = ExtResource( 3 )
+custom_icons/unchecked = ExtResource( 4 )
+text = "Полноэкранный режим"
+
+[node name="expandWindowCheckBox" type="CheckBox" parent="settings"]
+margin_top = 210.0
+margin_right = 320.0
+margin_bottom = 228.0
+custom_icons/checked = ExtResource( 3 )
+custom_icons/unchecked = ExtResource( 4 )
+text = "Расширение рамок окна"
+
+[node name="moveByMouseCheckBox" type="CheckBox" parent="settings"]
+margin_top = 232.0
+margin_right = 320.0
+margin_bottom = 250.0
+custom_icons/checked = ExtResource( 3 )
+custom_icons/unchecked = ExtResource( 4 )
+pressed = true
+text = "Движение интерфейса от мыши"
+
+[node name="warningLabel" type="Label" parent="settings"]
+visible = false
+modulate = Color( 1, 1, 1, 0.3 )
+margin_top = 238.0
+margin_right = 320.0
+margin_bottom = 267.0
+text = "После всех изменений возможно понадобится загрузка новой сцены."
+align = 1
+autowrap = true
+
+[node name="ver" type="Label" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = -16.0
+margin_right = 63.0
+margin_bottom = -3.0
+valign = 2

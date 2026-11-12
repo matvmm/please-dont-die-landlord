@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/seal_give.gd" type="Script" id=1]
 [ext_resource path="res://sprites/seals/default_seal.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://sprites/other/front_effect_3.png" type="Texture" id=4]
 [ext_resource path="res://sprites/other/front_effect_1.png" type="Texture" id=5]
 [ext_resource path="res://sprites/other/front_effect_2.png" type="Texture" id=6]
+[ext_resource path="res://scenes/pause.tscn" type="PackedScene" id=7]
+[ext_resource path="res://sprites/other/pause_button_1.png" type="Texture" id=8]
 
 [sub_resource type="AnimatedTexture" id=1]
 frames = 4
@@ -17,6 +19,8 @@ frame_2/texture = ExtResource( 4 )
 frame_2/delay_sec = 0.0
 frame_3/texture = ExtResource( 3 )
 frame_3/delay_sec = 0.0
+
+[sub_resource type="AudioStreamRandomPitch" id=2]
 
 [node name="seal_give" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -129,3 +133,19 @@ anchor_bottom = 1.0
 color = Color( 0, 0, 0, 1 )
 
 [node name="mN" type="Node2D" parent="."]
+
+[node name="soundPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource( 2 )
+
+[node name="pause" parent="." instance=ExtResource( 7 )]
+
+[node name="pauseButton" type="Button" parent="."]
+pause_mode = 2
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -28.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = 28.0
+icon = ExtResource( 8 )
+icon_align = 1

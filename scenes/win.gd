@@ -19,14 +19,7 @@ func _ready():
 	)
 	
 	Global.play_music("")
-	Global.currentLandlordIndex = 0
-	Global.health = 100
-	Global.headColony = 0
-	Global.bodyColony = 0
-	Global.legsColony = 0
-	Global.turns = 0
-	Global.parasitedLandlords = 0
-	Global.reset_deck()
+	Global.reset()
 	
 	label_defpos = label.rect_position
 	

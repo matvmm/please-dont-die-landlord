@@ -11,6 +11,7 @@ var guideWatched: bool = true
 var deck: Array = []
 var parasitedLandlords: int = 0
 
+var nColony: int = 0
 var headColony: int = 0
 var bodyColony: int = 0
 var legsColony: int = 0
@@ -94,7 +95,7 @@ var landlords: Array = [
 		"name": "Мышь", "desc": "Крошечная и шустрая.",
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
-		"health_mod": 0.9, "need_mod": 0.9,
+		"health_mod": 1.0, "need_mod": 0.9,
 		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
@@ -416,6 +417,51 @@ var activities: Dictionary = {
 			"legs": {"texts": ["Я не выйду из под крыши в такую погоду."], "effect": {"health": -30, "colony": -18}},
 		},
 	},
+	"event_heat": {
+		"default_text": ["Так жарко... В горле пересохло.", "Голова раскалывается от жары."],
+		"zone": "body",
+		"effect": {"health": -10, "colony": -5},
+		"danger": {
+			"head": {"texts": ["Мозг плавится. Я не соображаю."], "effect": {"health": -10}},
+			"body": {"texts": ["Походу обезвоживание. Внутри всё горит."], "effect": {"health": -15, "colony": -10}},
+		},
+	},
+	"event_paranoia": {
+		"default_text": ["Кто здесь? Я слышал шаги.", "Они следят за мной из розетки."],
+		"zone": "head",
+		"effect": {"health": -5},
+		"danger": {
+			"head": {"texts": ["Они внутри меня! Надо выцарапать!"], "effect": {"health": -20}},
+			"legs": {"texts": ["Бежать... куда? Они везде."], "effect": {"health": -15, "colony": -10}},
+		},
+	},
+	"event_medicine": {
+		"default_text": ["Пора выпить эти таблетки.", "Эта горечь во рту..."],
+		"zone": "biggest",
+		"effect": {"health": +10, "colony": -15},
+		"danger": {
+			"head": {"texts": ["Таблетки... они жгут меня изнутри."], "effect": {"health": -20, "colony": -15}},
+			"legs": {"texts": ["Передозировка. Мир плывет."], "effect": {"health": -15, "colony": -15}},
+		},
+	},
+	"event_fever": {
+		"default_text": ["Меня знобит. Бросает в жар.", "Температура поднимается."],
+		"zone": "biggest",
+		"effect": {"health": -5, "colony": -10},
+		"danger": {
+			"body": {"texts": ["Иммунитет атакует. Белые клетки повсюду."], "effect": {"health": -20, "colony": -25}},
+			"head": {"texts": ["Горит голова. Иммунитет душит колонию."], "effect": {"health": -20, "colony": -15}},
+		},
+	},
+	"event_cold_weather": {
+		"default_text": ["Зубы стучат от холода.", "Холод пробирает до костей."],
+		"zone": "legs",
+		"effect": {"health": -5, "colony": -4},
+		"danger": {
+			"head": {"texts": ["В голове ломит от холода. Мысли замерзают."], "effect": {"health": -12}},
+			"legs": {"texts": ["Ноги окоченели. Я не чувствую пальцев."], "effect": {"health": -10, "colony": -10}},
+		},
+	},
 }
 
 onready var musicPlayer: AudioStreamPlayer
@@ -477,3 +523,14 @@ func play_music(newStream: String):
 	musicPlayer.stream = load(newStream)
 	musicPlayer.stream.loop = true
 	musicPlayer.play()
+
+func reset():
+	Global.currentLandlordIndex = 0
+	Global.health = 100
+	Global.headColony = 0
+	Global.bodyColony = 0
+	Global.legsColony = 0
+	Global.turns = 0
+	Global.parasitedLandlords = 0
+	Global.nColony = 0
+	Global.reset_deck()

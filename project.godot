@@ -15,7 +15,7 @@ run/main_scene="res://scenes/intro.tscn"
 boot_splash/image="res://sprites/itchio/cover_image_1.png"
 boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
-config/icon="res://sprites/landlords/cat_1.png"
+config/icon="res://sprites/seals/default_seal.png"
 
 [autoload]
 
@@ -80,7 +80,6 @@ QUIT={
 
 [locale]
 
-test="ru"
 fallback="ru"
 translations=PoolStringArray( "res://localization/translations.csv", "res://localization/translations.en.translation" )
 

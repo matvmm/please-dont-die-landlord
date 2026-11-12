@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/landlord_died1.mp3-e303ceba685bf672e2dd2684a7514c93.mp3str"
+
+[deps]
+
+source_file="res://sounds/landlord_died1.mp3"
+dest_files=[ "res://.import/landlord_died1.mp3-e303ceba685bf672e2dd2684a7514c93.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

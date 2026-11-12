@@ -1,6 +1,7 @@
 # main.gd
 extends Node2D
 
+onready var canvas_layer = $CanvasLayer
 onready var endturn_button = $CanvasLayer/bottom/hbox/endturn_button
 onready var cards = $CanvasLayer/bottom/hbox/cards
 onready var healthbar_label = $CanvasLayer/top/healthbar/Label
@@ -32,6 +33,10 @@ onready var colonybar = $CanvasLayer/pBottom/colonybar
 onready var status_control = $CanvasLayer/status
 onready var label_status = $CanvasLayer/status/Label
 onready var rain_event_particles = $CanvasLayer/bg/rain_event
+onready var sound_player = $soundPlayer
+onready var canvas_modulate = $CanvasLayer/CanvasModulate
+onready var heat_event_particles = $CanvasLayer/bg/heat_event
+onready var cold_event_particles = $CanvasLayer/bg/cold_event
 
 var draw_pile: Array = []
 var discard_pile: Array = []
@@ -50,6 +55,9 @@ var mScreenMotion: Dictionary = {
 	"thought": Vector2.ZERO,
 	"landlord": Vector2.ZERO
 }
+var sounds: Array = [
+	preload("res://sounds/landlord_died1.mp3"),
+]
 
 
 func _init():
@@ -72,8 +80,9 @@ func _ready():
 	
 	reset_m_screen_motion()
 	
-	if Global.currentLandlordIndex < 3: Global.play_music("res://music/default_music_1.mp3")
-	else:                               Global.play_music("res://music/default_music_2.mp3")
+#	if Global.currentLandlordIndex < 3: Global.play_music("res://music/default_music_1.mp3")
+#	else:                               Global.play_music("res://music/default_music_2.mp3")
+	Global.play_music("res://music/default_music_1.mp3")
 	
 #	match Global.currentLandlordIndex:
 #		0,1,2: Global.maxCards = 5
@@ -307,12 +316,15 @@ func show_status(sText: String, duration: int = 6.0):
 	status_control.hide()
 
 func trigger_random_event():
+	if Global.currentLandlordIndex == 0: return
 	randomize()
-	if randf() > 0.35: return # 35%
+	if randf() > 0.50: return # 50%
 	
-	var event_type = randi() % 2
+	var event_type = randi() % 4
 	match event_type:
 		0:  # дождь
+			rain_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
+			rain_event_particles.position.x = get_viewport_rect().size.x/2
 			rain_event_particles.emitting = true
 			rain_event_particles.show()
 			currentLandlord["activities"]["event_rain_weather"] = 10
@@ -320,6 +332,8 @@ func trigger_random_event():
 			currentLandlord["activities"].erase("hide")
 			show_status("На улице начался дождь. Хозяин раздражен.", 3.5)
 		1:  # сильный ливень
+			rain_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
+			rain_event_particles.position.x = get_viewport_rect().size.x/2
 			rain_event_particles.emitting = true
 			rain_event_particles.amount *= 8.0
 			rain_event_particles.speed_scale *= 1.25
@@ -329,6 +343,26 @@ func trigger_random_event():
 			currentLandlord["activities"].erase("jog")
 			currentLandlord["activities"].erase("hide")
 			show_status("На улице начался сильный ливень. Хозяин раздражен.", 3.5)
+		2:  # жара
+			heat_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
+			heat_event_particles.position.x = get_viewport_rect().size.x/2
+			heat_event_particles.emitting = true
+			heat_event_particles.show()
+			currentLandlord["activities"]["event_heat"] = 10
+			currentLandlord["activities"].erase("sleep")
+			currentLandlord["activities"].erase("nap")
+			currentLandlord["activities"].erase("bath")
+			show_status("На улице невыносимая жара. Хозяин страдает от обезвоживания.", 3.5)
+		3:  # холод
+			cold_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
+			cold_event_particles.position.x = get_viewport_rect().size.x/2
+			cold_event_particles.emitting = true
+			cold_event_particles.show()
+			currentLandlord["activities"]["event_cold_weather"] = 10
+			currentLandlord["activities"].erase("jog")
+			currentLandlord["activities"].erase("bath")
+			currentLandlord["activities"].erase("drink")
+			show_status(tr("На улице резко похолодало. Хозяин дрожит."), 3.5)
 
 
 
@@ -403,6 +437,7 @@ func update_label(prev_colony: int = -1):
 		colonyadd_label.text = ("+" if prev_colony < colony else "") + str(colony - prev_colony)
 		tween.interpolate_property(colonyadd_label, "rect_position:y", 11.0-colonyadd_label.rect_size.y, 11.0-18.0, 0.75, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 		tween.interpolate_property(colonyadd_label, "modulate:a", 1.0, 0.0, 1.0)
+	Global.nColony = colony
 	tween.start()
 #	healthbar.value = Global.health
 	healthbar_label.text = " " + tr("Здоровье") + ": " + str(Global.health) + " / " + str(currentLandlord["health"]) + " %"
@@ -414,6 +449,7 @@ func update_label(prev_colony: int = -1):
 	tween.start()
 #	shading.texture.fill_to = Vector2(2.5, 0) if !is_scared() else Vector2(1.5, 0)
 	
+	sound_player.volume_db = Global.soundVolume
 	if colony >= currentLandlord["need"]:
 		round_over = true
 		Global.parasitedLandlords += 1
@@ -421,8 +457,11 @@ func update_label(prev_colony: int = -1):
 		if Global.health <= 0:
 			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
 			defaultanimation2.stop_all()
+			sound_player.stream.audio_stream = sounds[0]; sound_player.play()
+			shake(canvas_layer, 2.0, 24.0)
 			
 			var prevColony: int = colony
+			Global.nColony = prevColony
 			
 			var loss_mult: float = rand_range(0.5, 0.75)
 			Global.headColony = int(Global.headColony * loss_mult)
@@ -446,6 +485,8 @@ func update_label(prev_colony: int = -1):
 		if Global.health <= 0:
 			defaultanimation2.stop_all()
 			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
+			shake(canvas_layer, 2.0, 24.0)
+			sound_player.stream.audio_stream = sounds[0]; sound_player.play()
 		go_to_next_scene("res://scenes/gameover.tscn")
 		round_over = true
 		return
@@ -453,6 +494,7 @@ func update_label(prev_colony: int = -1):
 		landlord_texturerect.texture = load(currentLandlord["lowhealth_texture"])
 		shake(landlord_texturerect, 1.0, 9999999)
 		defaultanimdtionTime = 1.8; _run_default_animation()
+		shake(canvas_layer, 2.0, 12.0)
 	else:
 		landlord_texturerect.texture = load(currentLandlord["texture"])
 		shake(landlord_texturerect, 0.0, 0, true)
@@ -481,16 +523,26 @@ func go_to_next_scene(scenePath: String):
 	
 	get_tree().change_scene(scenePath)
 
-func shake(node: Control, strength: float = 8.0, times: int = 8, stopshake: bool = false):
+func shake(node, strength: float = 8.0, times: int = 8, stopshake: bool = false):
 	if stopshake: node.remove_meta("shaking")
 	if node.has_meta("shaking"): return
 	
 	node.set_meta("shaking", true)
-	var origin = node.rect_position
+	var origin
+	if node == canvas_layer:
+		origin = node.offset
+	else:
+		origin = node.rect_position
 	for i in times:
-		node.rect_position = origin + Vector2(rand_range(-strength, strength), rand_range(-strength, strength))
+		if node == canvas_layer:
+			node.offset = origin + Vector2(rand_range(-strength, strength), rand_range(-strength, strength))
+		else:
+			node.rect_position = origin + Vector2(rand_range(-strength, strength), rand_range(-strength, strength))
 		yield(get_tree().create_timer(0.03), "timeout")
-	node.rect_position = origin
+	if node == canvas_layer:
+		node.offset = origin
+	else:
+		node.rect_position = origin
 	node.remove_meta("shaking")
 
 
@@ -590,14 +642,14 @@ func describe_effect(effect: Dictionary, zone: String) -> String:
 	return "[" + PoolStringArray(parts).join(", ") + "]"
 
 func build_landlord(base: Dictionary) -> Dictionary:
-	var l: Dictionary = base.duplicate()
+	var l: Dictionary = base.duplicate(true)
 	if !l.has("need_mod"): return l
 	var depth: int = Global.currentLandlordIndex
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
 	
-	var need: int = int(round(((9 + 4 * depth) + colony) * l["need_mod"]))
+	var need: int = int(round(((9 + 4 * depth) + Global.nColony) * l["need_mod"]))
 	l["need"] = need
-	l["health"] = int(round(need * 1.2 * l.get("health_mod", 1.0)))
+	l["health"] = int(round(need * 1.1 * l.get("health_mod", 1.0)))
 	
 	return l
 

@@ -27,8 +27,6 @@ func _ready():
 	expand_window_check_box.connect("pressed", self, "_on_expand_window_check_box_pressed")
 	fullscreen_check_box.connect("pressed", self, "_on_fullscreen_check_box_pressed")
 	language_option_box.connect("item_selected", self, "_on_language_option_box_item_selected")
-	
-	Global.update_music_volume(-50.0)
 
 func _on_pause_button_pressed():
 	visible = not visible
@@ -66,5 +64,6 @@ func _on_expand_window_check_box_pressed():
 	)
 	
 	Global.expandWindow = expand_window_check_box.pressed
-	main.reset_m_screen_motion(true)
+	print(main)
+	if main == Node2D: main.reset_m_screen_motion(true)
 	warning_label.show()
