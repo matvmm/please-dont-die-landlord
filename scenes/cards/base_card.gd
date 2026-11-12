@@ -100,7 +100,7 @@ func apply_animation():
 	tween.interpolate_property(self, "rect_rotation", rect_rotation, 45.0, 0.4, Tween.TRANS_BACK, Tween.EASE_IN)
 	tween.start()
 	
-	yield(get_tree().create_timer(0.42), "timeout")
+	yield(get_tree().create_timer(0.41), "timeout")
 	
 	sound_player.volume_db = Global.soundVolume
 	sound_player.stream.audio_stream = sounds[4]; sound_player.play()

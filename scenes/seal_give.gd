@@ -111,7 +111,7 @@ func _on_pressed(seal_texturebutton: TextureButton, seal_label: Label):
 	tween.interpolate_property(seals_label[0], "rect_position:y", seals_label[0].rect_position.y, seals_label[0].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
 	tween.interpolate_property(seals_label[1], "rect_position:y", seals_label[1].rect_position.y, seals_label[1].rect_position.y - 32.0, 0.5, Tween.TRANS_CIRC, Tween.EASE_IN)
 	tween.start()
-	go_to_next_scene("res://scenes/roadmap.tscn")
+	go_to_next_scene("res://scenes/next_landlord.tscn")
 
 func go_to_next_scene(scenePath: String):
 	if scenePath == "": return

@@ -86,7 +86,7 @@ func _ready():
 	
 #	match Global.currentLandlordIndex:
 #		0,1,2: Global.maxCards = 5
-#		3,4  : Global.maxCards = 7
+#		3,4  : Global.maaxCards = 7
 #	Global.maxCards = 2 + Global.currentLandlordIndex * 1.5
 #	Global.maxCards = Global.currentLandlordIndex % 3 + 2
 	Global.maxCards = clamp(4 + 2 * int(Global.currentLandlordIndex / 3), 4, 7)
@@ -296,9 +296,9 @@ func give_cards(amount: int):
 
 func base_amount(zone: int) -> int:
 	match zone:
-		1: return 1 + randi() % 2
-		2: return 1 + randi() % 2
-	return 1 + randi() % 2
+		1: return 1 + randi() % 2 + (currentLandlord["need"] / 16.0)
+		2: return 1 + randi() % 2 + (currentLandlord["need"] / 24.0)
+	return 1 + randi() % 2 + (currentLandlord["need"] / 32.0)
 
 func show_status(sText: String, duration: int = 6.0):
 	label_status.text = sText

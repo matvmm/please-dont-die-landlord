@@ -99,18 +99,18 @@ var landlords: Array = [
 		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
+		"name": "Голубь", "desc": "Жрёт что дадут.",
+		"texture": "res://sprites/landlords/pigeon_1.png",
+		"lowhealth_texture": "res://sprites/landlords/lowhealth_pigeon_1.png",
+		"health_mod": 0.95, "need_mod": 1.0,
+		"activities": {"scavenge": 5, "hide": 4, "nap": 3, "hunt": 2, "zoomies": 1},
+	},
+	{
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
 		"health_mod": 1.0, "need_mod": 1.0,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
-	},
-	{
-		"name": "Дворняга", "desc": "Ничья. Живёт у баков.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
-		"health_mod": 1.0, "need_mod": 1.0,
-		"activities": {"scavenge": 5, "hide": 4, "nap": 3, "hunt": 2, "zoomies": 1},
 	},
 	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
@@ -167,13 +167,6 @@ var landlords: Array = [
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_ded_1.png",
 		"health_mod": 0.7, "need_mod": 1.1,
 		"activities": {"doctor": 12, "sleep": 3, "nothing": 3, "ponos": 1, "scratch": 2, "eat": 2, "bath": 1},
-	},
-	{
-		"name": "Обжора", "desc": "Ест. Потом жалеет.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
-		"health_mod": 1.3, "need_mod": 1.2,
-		"activities": {"eat": 12, "ponos": 7, "sleep": 3, "drink": 2, "nothing": 1, "doctor": 1},
 	},
 	{
 		"name": "Домовладелец", "desc": "Берёт плату за всё. Даже за воздух.",
