@@ -22,9 +22,10 @@ func _ready():
 	while nextLandlordIndex >= Global.landlords.size():
 		randomize()
 		nextLandlordIndex = Global.currentLandlordIndex + 1 + randi() % 2 # +1 or +2
+	
 	next_landlord.texture = load(Global.landlords[nextLandlordIndex]["texture"])
-	next_landlord_label.text = str(Global.landlords[nextLandlordIndex]["name"]) + "\n\n" + str(Global.landlords[nextLandlordIndex]["desc"])
-	prev_landlord_label.text = str(Global.landlords[Global.currentLandlordIndex]["name"]) + "\n\n" + str(Global.landlords[Global.currentLandlordIndex]["desc"])
+	next_landlord_label.text = tr(str(Global.landlords[nextLandlordIndex]["name"])) + "\n\n" + tr(str(Global.landlords[nextLandlordIndex]["desc"]))
+	prev_landlord_label.text = tr(str(Global.landlords[Global.currentLandlordIndex]["name"])) + "\n\n" + tr(str(Global.landlords[Global.currentLandlordIndex]["desc"]))
 	
 	Global.currentLandlordIndex = nextLandlordIndex
 	

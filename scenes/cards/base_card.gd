@@ -50,7 +50,7 @@ func _on_pressed():
 	
 	var dont_play_sound: bool = false
 	sound_player.volume_db = Global.soundVolume
-	if get_tree().get_nodes_in_group("active card").size() >= int(Global.maxCards / 2) && !self.is_in_group("active card"):
+	if get_tree().get_nodes_in_group("active card").size() >= int(Global.maxCards / 1.5) && !self.is_in_group("active card"):
 		active = false
 		sound_player.stream.audio_stream = sounds[3]; sound_player.play()
 		shake(self, 1.5, 4.0)

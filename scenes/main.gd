@@ -89,7 +89,7 @@ func _ready():
 #		3,4  : Global.maaxCards = 7
 #	Global.maxCards = 2 + Global.currentLandlordIndex * 1.5
 #	Global.maxCards = Global.currentLandlordIndex % 3 + 2
-	Global.maxCards = clamp(4 + 2 * int(Global.currentLandlordIndex / 3), 4, 7)
+	Global.maxCards = clamp(4 + 2 * int(Global.currentLandlordIndex / 2), 4, 7)
 	
 	endturn_button.connect("pressed", self, "_on_endturn_button_pressed")
 	head_button.connect("pressed", self, "_on_head_button_pressed")
@@ -102,6 +102,16 @@ func _ready():
 	_run_default_animation()
 	plan_thought()
 	give_cards(Global.maxCards)
+	
+	
+	
+	if Global.parasitedLandlords <= 0:
+		show_status(tr("Выбери карты паразитов и закинь в нужную часть тела. Читай их описание. Составляй колоду правильно."), 11.0)
+	elif Global.parasitedLandlords == 1:
+		show_status(tr("Если здоровье хозяина будет уничтожено или твоя колония будет на грани вымирания - ТЫ УМРЁШЬ."), 11.0)
+	elif Global.parasitedLandlords == 2:
+		show_status(tr("Надеюсь ты всё понял. Удачи."), 4.0)
+	
 	
 	tween.interpolate_property(fade, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
@@ -277,6 +287,15 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	tween.interpolate_property(bottom, "modulate:a", bottom.modulate.a, 1.0, 0.2)
 	tween.start()
 	
+	
+	
+	if Global.parasitedLandlords <= 0:
+		match Global.turns:
+			1: show_status(tr("Читай мысли хозяина, следи за его здоровьем. Здоровье хозяина не должно падать ниже середины."), 10.0)
+			2: show_status(tr("Уже заселённые паразиты потихоньку размножаются и сжирают здоровье хозяина."), 10.0)
+	
+	
+	
 	endturn_already_pressed = false
 
 func draw_card() -> Dictionary:
@@ -316,7 +335,7 @@ func show_status(sText: String, duration: int = 6.0):
 	status_control.hide()
 
 func trigger_random_event():
-	if Global.currentLandlordIndex == 0: return
+	if Global.parasitedLandlords <= 2: return
 	randomize()
 	if randf() > 0.50: return # 50%
 	
@@ -330,7 +349,7 @@ func trigger_random_event():
 			currentLandlord["activities"]["event_rain_weather"] = 10
 			currentLandlord["activities"].erase("jog")
 			currentLandlord["activities"].erase("hide")
-			show_status("На улице начался дождь. Хозяин раздражен.", 3.5)
+			show_status("На улице начался дождь. Хозяин раздражен.", 4.5)
 		1:  # сильный ливень
 			rain_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
 			rain_event_particles.position.x = get_viewport_rect().size.x/2
@@ -342,7 +361,7 @@ func trigger_random_event():
 			currentLandlord["activities"]["event_rain_weather"] = 10
 			currentLandlord["activities"].erase("jog")
 			currentLandlord["activities"].erase("hide")
-			show_status("На улице начался сильный ливень. Хозяин раздражен.", 3.5)
+			show_status("На улице начался сильный ливень. Хозяин раздражен.", 4.5)
 		2:  # жара
 			heat_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
 			heat_event_particles.position.x = get_viewport_rect().size.x/2
@@ -352,7 +371,7 @@ func trigger_random_event():
 			currentLandlord["activities"].erase("sleep")
 			currentLandlord["activities"].erase("nap")
 			currentLandlord["activities"].erase("bath")
-			show_status("На улице невыносимая жара. Хозяин страдает от обезвоживания.", 3.5)
+			show_status("На улице невыносимая жара. Хозяин страдает от обезвоживания.", 4.5)
 		3:  # холод
 			cold_event_particles.emission_rect_extents.x = get_viewport_rect().size.x/2
 			cold_event_particles.position.x = get_viewport_rect().size.x/2
@@ -362,7 +381,7 @@ func trigger_random_event():
 			currentLandlord["activities"].erase("jog")
 			currentLandlord["activities"].erase("bath")
 			currentLandlord["activities"].erase("drink")
-			show_status(tr("На улице резко похолодало. Хозяин дрожит."), 3.5)
+			show_status(tr("На улице резко похолодало. Хозяин дрожит."), 4.5)
 
 
 
@@ -472,7 +491,7 @@ func update_label(prev_colony: int = -1):
 			var addText: String = "[" + str(prevColony) + " - " + str(prevColony - targetColony) + " = " + str(targetColony) + "]"
 			# [11/11/2026] господи как же я заебался это писать, 5 час идёт сидения за этим ебаный, обоссанным кодом. это ощущается словно меня в жопу ебут. быстрее бы это закончилось.
 			
-			yield(show_status("Хозяин умер, но вы успели развить колонию. Из-за этого часть вашей колонии вымерла!" + "\n" + addText, 5.0), "completed")
+			yield(show_status(tr("Хозяин умер, но вы успели развить колонию. Из-за этого часть вашей колонии вымерла!") + "\n" + addText, 5.0), "completed")
 		
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
 			go_to_next_scene("res://scenes/win.tscn")

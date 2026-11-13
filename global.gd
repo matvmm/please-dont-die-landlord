@@ -1,7 +1,7 @@
 # global.gd
 extends Node
 
-var ver: String = "ver1t1"
+var ver: String = "ver1a1"
 
 
 var turns: int = 0
@@ -95,21 +95,21 @@ var landlords: Array = [
 		"name": "Мышь", "desc": "Крошечная и шустрая.",
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
-		"health_mod": 1.0, "need_mod": 0.9,
+		"health_mod": 1.4, "need_mod": 1.1,
 		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
 		"name": "Голубь", "desc": "Жрёт что дадут.",
 		"texture": "res://sprites/landlords/pigeon_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_pigeon_1.png",
-		"health_mod": 0.95, "need_mod": 1.0,
+		"health_mod": 1.3, "need_mod": 1.0,
 		"activities": {"scavenge": 5, "hide": 4, "nap": 3, "hunt": 2, "zoomies": 1},
 	},
 	{
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
-		"health_mod": 1.0, "need_mod": 1.0,
+		"health_mod": 1.15, "need_mod": 1.0,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
@@ -133,26 +133,26 @@ var landlords: Array = [
 	
 	# humans
 	
-	{
-		"name": "Студент", "desc": "Не спит. Не ест. Сдаёт.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
-		"health_mod": 1.0, "need_mod": 1.0,
-		"activities": {"exam": 6, "eat": 3, "sleep": 3, "nothing": 2, "drink": 2, "scratch": 1},
-	},
+#	{
+#		"name": "Студент", "desc": "Не спит. Не ест. Сдаёт.",
+#		"texture": "res://sprites/landlords/test_body_1.png",
+#		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+#		"health_mod": 1.0, "need_mod": 1.0,
+#		"activities": {"exam": 6, "eat": 3, "sleep": 3, "nothing": 2, "drink": 2, "scratch": 1},
+#	},
 	{
 		"name": "Бездомный", "desc": "Спит где придётся. Никто не заметит.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"texture": "res://sprites/landlords/bomzhara_1.png",
+		"lowhealth_texture": "res://sprites/landlords/lowhealth_bomzhara_1.png",
 		"health_mod": 1.1, "need_mod": 1.0,
 		"activities": {"sleep": 6, "nothing": 4, "scratch": 3, "drink": 3, "eat": 2},
 	},
 	{
-		"name": "Вдова", "desc": "Ходит на кладбище. Говорит с мужем.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"name": "Вдова", "desc": "Ходит на кладбище. Говорит с мужем. Мёртвым.",
+		"texture": "res://sprites/landlords/widow_1.png",
+		"lowhealth_texture": "res://sprites/landlords/lowhealth_widow_1.png",
 		"health_mod": 1.0, "need_mod": 1.0,
-		"activities": {"grave": 5, "nothing": 5, "doctor": 4, "sleep": 3, "eat": 2, "bath": 1},
+		"activities": {"grave": 7, "nothing": 4, "doctor": 3, "sleep": 3, "eat": 2, "bath": 1},
 	},
 	{
 		"name": "Сонный сторож", "desc": "Спит. Много. Работа? Не слышал такого.",
@@ -170,8 +170,8 @@ var landlords: Array = [
 	},
 	{
 		"name": "Домовладелец", "desc": "Берёт плату за всё. Даже за воздух.",
-		"texture": "res://sprites/landlords/test_body_1.png",
-		"lowhealth_texture": "res://sprites/landlords/test_body_1.png",
+		"texture": "res://sprites/landlords/renter_1.png",
+		"lowhealth_texture": "res://sprites/landlords/lowhealth_renter_1.png",
 		"health_mod": 0.8, "need_mod": 1.2,
 		"activities": {"rent": 8, "eat": 5, "drink": 1, "sleep": 3, "nothing": 2, "doctor": 2},
 	},
@@ -395,6 +395,7 @@ var activities: Dictionary = {
 	"event_rain_weather": {
 		"default_text": ["Опять дождь. Когда он уже кончится..?", "Ненавижу дождливую погоду, скукота."],
 		"zone": "biggest",
+		"event": true,
 		"effect": {"health": +15, "colony": -10},
 		"danger": {
 			"head": {"texts": ["Я уже не МОГУ ТЕРПЕТЬ ЭТОТ ДОЖДЬ!!!"], "effect": {"health": -25}},
@@ -404,6 +405,7 @@ var activities: Dictionary = {
 	"event_powerful_rain_weather": {
 		"default_text": ["Какой сильный ливень. Когда он уже кончится..?", "Ненавижу такую погоду, всё гремит вокруг!."],
 		"zone": "biggest",
+		"event": true,
 		"effect": {"health": +10, "colony": -15},
 		"danger": {
 			"head": {"texts": ["Чёртов ливень, я даже заснуть не могу!"], "effect": {"health": -30}},
@@ -413,6 +415,7 @@ var activities: Dictionary = {
 	"event_heat": {
 		"default_text": ["Так жарко... В горле пересохло.", "Голова раскалывается от жары."],
 		"zone": "body",
+		"event": true,
 		"effect": {"health": -10, "colony": -5},
 		"danger": {
 			"head": {"texts": ["Мозг плавится. Я не соображаю."], "effect": {"health": -10}},
@@ -422,6 +425,7 @@ var activities: Dictionary = {
 	"event_paranoia": {
 		"default_text": ["Кто здесь? Я слышал шаги.", "Они следят за мной из розетки."],
 		"zone": "head",
+		"event": true,
 		"effect": {"health": -5},
 		"danger": {
 			"head": {"texts": ["Они внутри меня! Надо выцарапать!"], "effect": {"health": -20}},
@@ -431,6 +435,7 @@ var activities: Dictionary = {
 	"event_medicine": {
 		"default_text": ["Пора выпить эти таблетки.", "Эта горечь во рту..."],
 		"zone": "biggest",
+		"event": true,
 		"effect": {"health": +10, "colony": -15},
 		"danger": {
 			"head": {"texts": ["Таблетки... они жгут меня изнутри."], "effect": {"health": -20, "colony": -15}},
@@ -440,6 +445,7 @@ var activities: Dictionary = {
 	"event_fever": {
 		"default_text": ["Меня знобит. Бросает в жар.", "Температура поднимается."],
 		"zone": "biggest",
+		"event": true,
 		"effect": {"health": -5, "colony": -10},
 		"danger": {
 			"body": {"texts": ["Иммунитет атакует. Белые клетки повсюду."], "effect": {"health": -20, "colony": -25}},
@@ -449,6 +455,7 @@ var activities: Dictionary = {
 	"event_cold_weather": {
 		"default_text": ["Зубы стучат от холода.", "Холод пробирает до костей."],
 		"zone": "legs",
+		"event": true,
 		"effect": {"health": -5, "colony": -4},
 		"danger": {
 			"head": {"texts": ["В голове ломит от холода. Мысли замерзают."], "effect": {"health": -12}},
