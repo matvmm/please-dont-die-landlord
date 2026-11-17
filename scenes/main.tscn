@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://sprites/other/fg2.png" type="Texture" id=2]
@@ -57,6 +57,16 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="Gradient" id=24]
+interpolation_mode = 1
+offsets = PoolRealArray( 0.202186 )
+colors = PoolColorArray( 0, 0, 0, 0.6 )
+
+[sub_resource type="GradientTexture2D" id=25]
+gradient = SubResource( 24 )
+width = 1
+height = 1
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 0.784314 )
@@ -123,10 +133,10 @@ color = Color( 1, 1, 1, 0.75 )
 
 [node name="heat_event" type="CPUParticles2D" parent="CanvasLayer/bg"]
 visible = false
-position = Vector2( 312, 480 )
+position = Vector2( 312, 368 )
 emitting = false
 amount = 12
-lifetime = 3.0
+lifetime = 2.0
 preprocess = 3.0
 speed_scale = 0.5
 texture = SubResource( 23 )
@@ -145,7 +155,7 @@ visible = false
 position = Vector2( 312, 0 )
 emitting = false
 amount = 12
-lifetime = 3.0
+lifetime = 2.0
 preprocess = 3.0
 speed_scale = 0.35
 texture = SubResource( 23 )
@@ -182,6 +192,7 @@ margin_bottom = 118.0
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/thought"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 260, 34 )
 texture = ExtResource( 9 )
 stretch_mode = 4
 
@@ -220,6 +231,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 text = " Health:"
 valign = 1
+
+[node name="scaredTexture" type="TextureRect" parent="CanvasLayer/top/healthbar"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -1.0
+margin_top = -12.0
+margin_right = 1.0
+margin_bottom = 12.0
+texture = SubResource( 25 )
+stretch_mode = 1
 
 [node name="right" type="Control" parent="CanvasLayer"]
 anchor_left = 1.0
@@ -450,6 +473,9 @@ margin_bottom = -7.0
 align = 1
 valign = 1
 autowrap = true
+
+[node name="statusTimer" type="Timer" parent="CanvasLayer/status"]
+one_shot = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="CanvasLayer"]
 

@@ -37,6 +37,7 @@ onready var sound_player = $soundPlayer
 onready var canvas_modulate = $CanvasLayer/CanvasModulate
 onready var heat_event_particles = $CanvasLayer/bg/heat_event
 onready var cold_event_particles = $CanvasLayer/bg/cold_event
+onready var status_timer = $CanvasLayer/status/statusTimer
 
 var draw_pile: Array = []
 var discard_pile: Array = []
@@ -47,6 +48,7 @@ var round_over: bool = false
 var thought_muted: bool = false
 var replace_hand: bool = false
 var defaultanimdtionTime: float = 1.0
+var statusShow: bool = false
 var mScreenMotion: Dictionary = {
 	"top": Vector2.ZERO,
 	"right": Vector2.ZERO,
@@ -58,6 +60,8 @@ var mScreenMotion: Dictionary = {
 var sounds: Array = [
 	preload("res://sounds/landlord_died1.mp3"),
 ]
+
+signal cardPressedStatus
 
 
 func _init():
@@ -95,6 +99,8 @@ func _ready():
 	head_button.connect("pressed", self, "_on_head_button_pressed")
 	body_button.connect("pressed", self, "_on_body_button_pressed")
 	legs_button.connect("pressed", self, "_on_legs_button_pressed")
+	status_timer.connect("timeout", self, "hide_status")
+	connect("cardPressedStatus", self, "hide_status")
 	
 	update_label()
 	endturn_button.text = tr("ЗАВЕРШИТЬ ХОД").replace(" ", "\n")
@@ -162,6 +168,11 @@ func _run_default_animation():
 	defaultanimation2.interpolate_property(landlord_texturerect, "rect_scale", Vector2(1.0, 0.95), Vector2(0.95, 1.0), defaultanimdtionTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT)
 	defaultanimation2.interpolate_property(landlord_texturerect, "rect_scale", Vector2(0.95, 1.0), Vector2(1.0, 0.95), defaultanimdtionTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT, defaultanimdtionTime)
 	defaultanimation2.start()
+	
+	defaultanimation.repeat = true
+	defaultanimation.interpolate_property(thought_texturerect, "rect_scale", Vector2(1.0, 0.96), Vector2(0.96, 1.0), defaultanimdtionTime*3, Tween.TRANS_CIRC, Tween.EASE_IN_OUT)
+	defaultanimation.interpolate_property(thought_texturerect, "rect_scale", Vector2(0.96, 1.0), Vector2(1.0, 0.96), defaultanimdtionTime*3, Tween.TRANS_CIRC, Tween.EASE_IN_OUT, defaultanimdtionTime*3)
+	defaultanimation.start()
 
 func _process(delta):
 	if !Global.moveByMouse: return
@@ -257,9 +268,9 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 	Global.legsColony = max(Global.legsColony, 0)
 	
 	### вычитаем здоровье
-	Global.health -= int(ceil(Global.headColony / 2.0))
-	Global.health -= int(ceil(Global.bodyColony / 3.0))
-	Global.health -= int(ceil(Global.legsColony / 3.5))
+	Global.health -= int(ceil(Global.headColony / 3.0))
+	Global.health -= int(ceil(Global.bodyColony / 4.0))
+	Global.health -= int(ceil(Global.legsColony / 4.5))
 	Global.health = max(Global.health, 0)
 	
 	### применяем действия из текущей мысли и планируем новую
@@ -277,6 +288,14 @@ func end_turn(attack: int):   # 1 - head, 2 - body, 3 - legs
 #	tween.interpolate_property(top, "rect_scale", Vector2.ONE*1.05, Vector2.ONE, 0.6, Tween.TRANS_BOUNCE, Tween.EASE_OUT)
 #	tween.start()
 	shake(top, 4.0, 8.0)
+	
+	### предпросмотр, проиграет ли игрок в следующем ходу
+	var projected_damage: int = int(ceil(Global.headColony / 3.0)) + int(ceil(Global.bodyColony / 4.0)) + int(ceil(Global.legsColony / 4.5)) + 1
+	if (Global.health - projected_damage) <= 0:
+		show_status("Похоже, хозяин скоро будет бездыханно лежать на земле. Постарайтесь минимизировать расход его здоровья.")
+	elif (Global.headColony+Global.bodyColony+Global.legsColony) <= (currentLandlord["need"] * 0.15) && Global.currentLandlordIndex != 0:
+		show_status("Ваша колония не в лучшем состоянии. Постарайтесь как можно быстрее набрать больше паразитов.")
+	
 	update_label(prev_colony)
 	if round_over: return
 	
@@ -314,23 +333,30 @@ func give_cards(amount: int):
 		cards.add_child(card)
 
 func base_amount(zone: int) -> int:
+	var base: int = int(currentLandlord["need"] / 64.0)
 	match zone:
-		1: return 1 + randi() % 2 + (currentLandlord["need"] / 16.0)
-		2: return 1 + randi() % 2 + (currentLandlord["need"] / 24.0)
-	return 1 + randi() % 2 + (currentLandlord["need"] / 32.0)
+		1: return 1+base + 4 + randi() % 3
+		2: return 1+base + 2 + randi() % 3
+	return        1+base + 0 + randi() % 3
 
-func show_status(sText: String, duration: int = 6.0):
+func show_status(sText: String, duration: float = 6.0):
+	statusShow = true
+	
 	label_status.text = sText
 	status_control.show()
 	tween.interpolate_property(status_control, "modulate:a", 0.0, 1.0, 1.0, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	tween.start()
 	
-	yield(get_tree().create_timer(duration - 1.0), "timeout")
+	status_timer.wait_time = duration; status_timer.start()
+
+func hide_status():
+	if !statusShow: return
+	statusShow = false
 	
-	tween.interpolate_property(status_control, "modulate:a", 1.0, 0.0, 2.0)
+	tween.interpolate_property(status_control, "modulate:a", 1.0, 0.0, 1.0)
 	tween.start()
 	
-	yield(get_tree().create_timer(2.1), "timeout")
+	yield(get_tree().create_timer(1.01), "timeout")
 	
 	status_control.hide()
 
@@ -416,7 +442,7 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 				gains[attack] = currentLandlord["need"]
 			"randomity":
 				randomize()
-				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 2))
+				gains[attack] += int(rand_range(-currentLandlord["need"] / 3, currentLandlord["need"] / 4))
 			"replacement":
 				replace_hand = true
 	else:
@@ -429,7 +455,7 @@ func apply_card(card, attack: int, played: Array, gains: Dictionary):
 				gains[attack] = currentLandlord["need"]
 			"randomity":
 				randomize()
-				gains[attack] += int(rand_range(-currentLandlord["need"] / 4, currentLandlord["need"] / 4))
+				gains[attack] += int(rand_range(-currentLandlord["need"] / 2, currentLandlord["need"] / 4))
 			"replacement":
 				replace_hand = true
 			_:
@@ -491,7 +517,8 @@ func update_label(prev_colony: int = -1):
 			var addText: String = "[" + str(prevColony) + " - " + str(prevColony - targetColony) + " = " + str(targetColony) + "]"
 			# [11/11/2026] господи как же я заебался это писать, 5 час идёт сидения за этим ебаный, обоссанным кодом. это ощущается словно меня в жопу ебут. быстрее бы это закончилось.
 			
-			yield(show_status(tr("Хозяин умер, но вы успели развить колонию. Из-за этого часть вашей колонии вымерла!") + "\n" + addText, 5.0), "completed")
+			show_status(tr("Хозяин умер, но вы успели развить колонию. Из-за этого часть вашей колонии вымерла!") + "\n" + addText, 5.0)
+			yield(get_tree().create_timer(6.01), "timeout")
 		
 		if Global.landlords.size() <= Global.currentLandlordIndex+1:
 			go_to_next_scene("res://scenes/win.tscn")
@@ -500,7 +527,7 @@ func update_label(prev_colony: int = -1):
 		round_over = true
 		return
 	
-	if Global.health <= 0 || (colony <= (currentLandlord["need"] * 0.2) && Global.currentLandlordIndex != 0):
+	if Global.health <= 0 || (colony <= (currentLandlord["need"] * 0.1) && Global.currentLandlordIndex != 0):
 		if Global.health <= 0:
 			defaultanimation2.stop_all()
 			landlord_texturerect.texture = load("res://sprites/landlords/dead_1.png")
@@ -510,11 +537,13 @@ func update_label(prev_colony: int = -1):
 		round_over = true
 		return
 	if is_scared():
+		Global.play_music("res://music/default_music_2.mp3")
 		landlord_texturerect.texture = load(currentLandlord["lowhealth_texture"])
-		shake(landlord_texturerect, 1.0, 9999999)
+		shake(landlord_texturerect, 2.0, 9999999)
 		defaultanimdtionTime = 1.8; _run_default_animation()
 		shake(canvas_layer, 2.0, 12.0)
 	else:
+		Global.play_music("res://music/default_music_1.mp3")
 		landlord_texturerect.texture = load(currentLandlord["texture"])
 		shake(landlord_texturerect, 0.0, 0, true)
 
@@ -666,7 +695,7 @@ func build_landlord(base: Dictionary) -> Dictionary:
 	var depth: int = Global.currentLandlordIndex
 	var colony: int = Global.headColony+Global.bodyColony+Global.legsColony
 	
-	var need: int = int(round(((9 + 4 * depth) + Global.nColony) * l["need_mod"]))
+	var need: int = int(round(((9 + 5 * depth) + Global.nColony * 1.3) * l["need_mod"]))
 	l["need"] = need
 	l["health"] = int(round(need * 1.1 * l.get("health_mod", 1.0)))
 	

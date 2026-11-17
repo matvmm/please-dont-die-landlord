@@ -7,6 +7,7 @@ onready var prev_landlord_label = $all/prevLandlordLabel
 onready var next_landlord_label = $all/nextLandlordLabel
 onready var tween = $Tween
 onready var fade = $fade
+onready var roadmap_progressbar = $roadmap_progressbar
 
 var double_click: int = 0
 
@@ -27,7 +28,11 @@ func _ready():
 	next_landlord_label.text = tr(str(Global.landlords[nextLandlordIndex]["name"])) + "\n\n" + tr(str(Global.landlords[nextLandlordIndex]["desc"]))
 	prev_landlord_label.text = tr(str(Global.landlords[Global.currentLandlordIndex]["name"])) + "\n\n" + tr(str(Global.landlords[Global.currentLandlordIndex]["desc"]))
 	
+	roadmap_progressbar.max_value = Global.landlords.size()
+	roadmap_progressbar.value = Global.currentLandlordIndex+1
+	
 	Global.currentLandlordIndex = nextLandlordIndex
+	
 	
 	
 	fade.modulate.a = 1.0
@@ -40,6 +45,7 @@ func _ready():
 	fade.hide()
 	
 	tween.interpolate_property(all, "rect_position:x", 400.0, -400.0, 2.0, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
+	tween.interpolate_property(roadmap_progressbar, "value", roadmap_progressbar.value, Global.currentLandlordIndex+1, 2.0, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
 	tween.start()
 	yield(tween, "tween_all_completed")
 	yield(get_tree().create_timer(2.5), "timeout")

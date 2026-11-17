@@ -1,7 +1,7 @@
 # global.gd
 extends Node
 
-var ver: String = "ver1a1"
+var ver: String = "ver1a2"
 
 
 var turns: int = 0
@@ -95,28 +95,28 @@ var landlords: Array = [
 		"name": "Мышь", "desc": "Крошечная и шустрая.",
 		"texture": "res://sprites/landlords/mouse_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_mouse_1.png",
-		"health_mod": 1.4, "need_mod": 1.1,
+		"health_mod": 1.5, "need_mod": 1.5,
 		"activities": {"snack": 3, "nap": 3, "groom": 3, "hide": 3, "zoomies": 1},
 	},
 	{
 		"name": "Голубь", "desc": "Жрёт что дадут.",
 		"texture": "res://sprites/landlords/pigeon_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_pigeon_1.png",
-		"health_mod": 1.3, "need_mod": 1.0,
+		"health_mod": 1.5, "need_mod": 1.0,
 		"activities": {"scavenge": 5, "hide": 4, "nap": 3, "hunt": 2, "zoomies": 1},
 	},
 	{
 		"name": "Кот", "desc": "Спит, охотится, осуждает.",
 		"texture": "res://sprites/landlords/cat_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_cat_1.png",
-		"health_mod": 1.15, "need_mod": 1.0,
+		"health_mod": 1.4, "need_mod": 1.0,
 		"activities": {"nap": 6, "groom": 4, "hunt": 3, "snack": 3, "zoomies": 2, "hide": 2, "vet": 1},
 	},
 	{
 		"name": "Пёс", "desc": "Шумный, преданный, вечно в движении.",
 		"texture": "res://sprites/landlords/dog_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_dog_1.png",
-		"health_mod": 1.0, "need_mod": 1.0,
+		"health_mod": 1.3, "need_mod": 1.0,
 		"activities": {"zoomies": 4, "snack": 4, "hunt": 3, "nap": 3, "vet": 2, "groom": 1, "hide": 1},
 	},
 #	{
@@ -165,14 +165,14 @@ var landlords: Array = [
 		"name": "Старик", "desc": "Хилый. Любит врачей.",
 		"texture": "res://sprites/landlords/ded_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_ded_1.png",
-		"health_mod": 0.7, "need_mod": 1.1,
+		"health_mod": 0.8, "need_mod": 1.05,
 		"activities": {"doctor": 12, "sleep": 3, "nothing": 3, "ponos": 1, "scratch": 2, "eat": 2, "bath": 1},
 	},
 	{
 		"name": "Домовладелец", "desc": "Берёт плату за всё. Даже за воздух.",
 		"texture": "res://sprites/landlords/renter_1.png",
 		"lowhealth_texture": "res://sprites/landlords/lowhealth_renter_1.png",
-		"health_mod": 0.8, "need_mod": 1.2,
+		"health_mod": 1.1, "need_mod": 1.3,
 		"activities": {"rent": 8, "eat": 5, "drink": 1, "sleep": 3, "nothing": 2, "doctor": 2},
 	},
 ]
@@ -398,28 +398,28 @@ var activities: Dictionary = {
 		"event": true,
 		"effect": {"health": +15, "colony": -10},
 		"danger": {
-			"head": {"texts": ["Я уже не МОГУ ТЕРПЕТЬ ЭТОТ ДОЖДЬ!!!"], "effect": {"health": -25}},
-			"legs": {"texts": ["Я не выйду из под крыши в такую погоду."], "effect": {"health": -25, "colony": -18}},
+			"head": {"texts": ["Я уже не МОГУ ТЕРПЕТЬ ЭТОТ ДОЖДЬ!!!"], "effect": {"health": -20}},
+			"legs": {"texts": ["Я не выйду из под крыши в такую погоду."], "effect": {"health": -20, "colony": -15}},
 		},
 	},
 	"event_powerful_rain_weather": {
 		"default_text": ["Какой сильный ливень. Когда он уже кончится..?", "Ненавижу такую погоду, всё гремит вокруг!."],
 		"zone": "biggest",
 		"event": true,
-		"effect": {"health": +10, "colony": -15},
+		"effect": {"health": +5, "colony": -15},
 		"danger": {
 			"head": {"texts": ["Чёртов ливень, я даже заснуть не могу!"], "effect": {"health": -30}},
-			"legs": {"texts": ["Я не выйду из под крыши в такую погоду."], "effect": {"health": -30, "colony": -18}},
+			"legs": {"texts": ["Я не выйду из под крыши в такую погоду."], "effect": {"health": -30, "colony": -20}},
 		},
 	},
 	"event_heat": {
 		"default_text": ["Так жарко... В горле пересохло.", "Голова раскалывается от жары."],
 		"zone": "body",
 		"event": true,
-		"effect": {"health": -10, "colony": -5},
+		"effect": {"health": -5, "colony": -5},
 		"danger": {
 			"head": {"texts": ["Мозг плавится. Я не соображаю."], "effect": {"health": -10}},
-			"body": {"texts": ["Походу обезвоживание. Внутри всё горит."], "effect": {"health": -15, "colony": -10}},
+			"body": {"texts": ["Походу обезвоживание. Внутри всё горит."], "effect": {"health": -10, "colony": -10}},
 		},
 	},
 	"event_paranoia": {

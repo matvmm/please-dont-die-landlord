@@ -6,7 +6,7 @@ onready var card_desc = $"../../../../card_desc"
 onready var landlord_sprite = $"../../../../bg/landlord"
 onready var seal_texturerect = $seal_texturerect
 onready var sound_player = $soundPlayer
-
+onready var main: Node2D = get_tree().current_scene
 var card_data: Dictionary
 var currentDefaultCard: Dictionary
 var active: bool = false
@@ -58,6 +58,8 @@ func _on_pressed():
 	
 	if active: add_to_group("active card")
 	else:      remove_from_group("active card")
+	
+	main.emit_signal("cardPressedStatus")
 	
 	if active:
 		sound_player.stream.audio_stream = sounds[1]; sound_player.play()
